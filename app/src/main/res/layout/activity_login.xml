@@ -106,16 +106,7 @@
 
         </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/signUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="30dp"
-        android:text="@string/register"
-        android:layout_below="@id/login"
-        android:textColor="@color/colorWhite"
-        android:textSize="18sp" />
+
 
     <Button
         android:id="@+id/login"
@@ -128,7 +119,35 @@
         android:elevation="1dp"
         android:background="@drawable/my_button"
         android:layout_marginTop="-25dp"/>
-    </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/signUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="30dp"
+                    android:text="@string/register"
+                    android:layout_below="@id/login"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp" />
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/signIn"
+                    android:layout_below="@+id/signUp"
+                    android:layout_marginStart="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginBottom="30dp"/>
+                <com.facebook.login.widget.LoginButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/facebookLogin"
+                    android:layout_below="@+id/signUp"
+                    android:layout_toRightOf="@+id/signIn"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginLeft="60dp"
+                    android:layout_toEndOf="@+id/signIn" />
+            </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
 

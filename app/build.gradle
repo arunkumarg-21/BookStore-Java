@@ -35,5 +35,8 @@ dependencies {
     implementation 'com.karumi:dexter:5.0.0'
     implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
     implementation 'com.google.android.libraries.places:places:1.1.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.facebook.android:facebook-login:[5,6)'
+
 
 }

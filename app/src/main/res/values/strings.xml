@@ -24,4 +24,7 @@
     <string name="address">Delivery to Address</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="facebook_app_id">1030225210679950</string>
+    <string name="fb_login_protocol_scheme">fb1030225210679950</string>
+
 </resources>
