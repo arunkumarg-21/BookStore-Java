@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "934650435511",
+    "firebase_url": "https://logindemo-ab2d5.firebaseio.com",
+    "project_id": "logindemo-ab2d5",
+    "storage_bucket": "logindemo-ab2d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934650435511:android:36e7d970fad9653f517a32",
+        "android_client_info": {
+          "package_name": "com.example.bookstore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "934650435511-kvr95jkugbi0vtg82mj474rteabnopgo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQypMtZbou6nxofH4n5YoMFnC91NY7boI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934650435511-kvr95jkugbi0vtg82mj474rteabnopgo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

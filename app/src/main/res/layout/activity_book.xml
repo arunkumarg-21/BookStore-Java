@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">-->
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/toolBar"
+            android:background="@color/colorPrimary"
+            app:titleTextColor="@android:color/holo_red_dark">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textStart"
+                android:gravity="start"
+                android:text="@string/app_name"
+                android:textSize="23sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
+
+            <!--<ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_account_circle_black_24dp"
+                android:tint="@color/colorWhite"
+                android:layout_marginStart="150dp"
+                android:layout_marginLeft="150dp" />-->
+
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolBar"
+            android:id="@+id/address"
+            android:hint="@string/address"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="5dp"
+            android:autofillHints="@string/address"
+            android:inputType="textMultiLine"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:drawableEnd="@drawable/ic_location_on_black_24dp"
+            android:drawableRight="@drawable/ic_location_on_black_24dp" />
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
+        android:layout_height="250dp"
+        android:layout_below="@+id/address"
+        android:contentDescription="@string/mBookImage" />
+        <RatingBar
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/textViewHead"
+            android:layout_height="wrap_content"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_alignEnd="@+id/img"
+            android:layout_alignRight="@+id/img" />
+
+    <TextView
+        android:id="@+id/textViewHead"
+        android:layout_below="@+id/img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="@string/heading"
+        android:textSize="22sp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold|italic"
+        android:layout_marginStart="20dp" />
+    <TextView
+        android:id="@+id/desc"
+        android:layout_below="@+id/rating"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/description"
+        android:textSize="15sp"
+        android:textColor="@android:color/black"
+        android:layout_marginStart="20dp" />
+
+        <TextView android:layout_width="wrap_content"
+            android:id="@+id/qty"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_below="@id/desc"
+            android:text="Qty:"
+            android:layout_marginLeft="20dp" />
+
+        <Spinner
+            android:id="@+id/quantity"
+            android:layout_width="120dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/desc"
+            android:layout_toRightOf="@+id/qty"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toEndOf="@+id/qty" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/desc"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="@color/colorWhite">
+
+
+        <Button
+            android:id="@+id/btCart"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:drawableStart="@drawable/ic_shopping_cart"
+            android:drawableTint="#EC7063"
+            android:textStyle="bold"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/mCart"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginLeft="5dp"
+            android:drawableLeft="@drawable/ic_shopping_cart" />
+
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:srcCompat="@drawable/books"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="15dp"
+            android:contentDescription="@string/mBook">
+        </ImageView>
+
+        <Button
+            android:id="@+id/btBorrow"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="-13dp"
+            android:textStyle="bold"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/mBorrow"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginLeft="-13dp" />
+    </LinearLayout>
+    </RelativeLayout>
+    </ScrollView>

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">BookStore</string>
+    <string name="login">Login</string>
+    <string name="register">New User?Sign up.</string>
+    <string name="reg">Register</string>
+    <string name="log">Already a User?Login.</string>
+    <string name="bgImage">BackGrdImage</string>
+    <string name="welcome">Welcome To BookStore.</string>
+    <string name="logo">Logo</string>
+    <string name="EmailId">Email Id</string>
+    <string name="userId">User Id</string>
+    <string name="password">Password</string>
+    <string name="mBookImage">book_Image</string>
+    <string name="heading">Heading</string>
+    <string name="description">Description</string>
+    <string name="mBuy">Buy</string>
+    <string name="mBorrow">Borrow</string>
+    <string name="mCart">Add to cart</string>
+    <string name="mRatings">Ratings</string>
+    <string name="navigation_drawer_opened">Drawer opened</string>
+    <string name="navigation_drawer_closed">Drawer closed</string>
+    <string name="mBook">Books</string>
+    <string name="price">Price</string>
+    <string name="address">Delivery to Address</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_map">MapActivity</string>
+</resources>
