@@ -66,13 +66,13 @@ public class Login extends AppCompatActivity {
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        Toast.makeText(getApplicationContext(),"Welcome "+object.optString("name"),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this,"Welcome "+object.optString("name"),Toast.LENGTH_SHORT).show();
 
                     }
                 });
 
 
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                startActivity(new Intent(Login.this,MainActivity.class));
 
             }
 

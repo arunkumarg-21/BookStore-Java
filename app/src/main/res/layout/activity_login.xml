@@ -1,153 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainActivity"
-    android:background="@drawable/bgimage">
+    android:background="@drawable/bgimage"
+    tools:context=".MainActivity">
 
 
-        <ScrollView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:fitsSystemWindows="true"
+        android:isScrollContainer="false">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:fillViewport="true"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-        <TextView
-        android:id="@+id/tvDesc"
-        android:layout_below="@+id/toolBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold|italic"
-        android:text="@string/welcome"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:textSize="23sp"
-        android:textColor="@color/colorWhite"/>
-
-
-
-    <TextView
-        android:id="@+id/tvLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold|italic"
-        android:text="@string/login"
-        android:layout_below="@id/tvDesc"
-        android:layout_alignStart="@id/tvDesc"
-        android:layout_alignLeft="@+id/tvDesc"
-        android:textSize="23sp"
-        android:textColor="@color/colorWhite"/>
-
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvLogin"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="15dp"
-        android:src="@drawable/book"
-        android:contentDescription="@string/logo" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_centerInParent="true"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="100dp"
-            android:layout_marginStart="100dp"
-            android:layout_height="180dp"
-            android:elevation="3dp"
-            app:cardCornerRadius="15dp"
-            app:cardBackgroundColor="@color/colorWhite">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvDesc"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="30dp"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:layout_marginTop="-12dp">
+                android:layout_below="@+id/toolBar"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/welcome"
+                android:textColor="@color/colorWhite"
+                android:textSize="23sp"
+                android:textStyle="bold|italic" />
 
-            <EditText
-                android:id="@+id/userId"
-                android:layout_width="match_parent"
+
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_account_circle_black_24dp"
-                android:drawableLeft="@drawable/ic_account_circle_black_24dp"
-                android:drawableTint="@color/colorPrimaryDark"
-                android:textCursorDrawable="@null"
-                android:textColor="#212F3D"
-                android:backgroundTint="#212F3D"
-                android:hint="UserId"
-                android:autofillHints="UserName"
-                tools:targetApi="o"
-                android:inputType="text" />
+                android:layout_below="@id/tvDesc"
+                android:layout_alignStart="@id/tvDesc"
+                android:layout_alignLeft="@+id/tvDesc"
+                android:text="@string/login"
+                android:textColor="@color/colorWhite"
+                android:textSize="23sp"
+                android:textStyle="bold|italic" />
 
-            <EditText
-                android:id="@+id/pass"
-                android:layout_width="match_parent"
+
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_vpn_key_black_24dp"
-                android:drawableLeft="@drawable/ic_vpn_key_black_24dp"
-                android:drawableTint="@color/colorPrimaryDark"
-                android:textCursorDrawable="@null"
-                android:textColor="#212F3D"
-                android:backgroundTint="#212F3D"
-                android:hint="Password"
-                android:autofillHints="Password"
-                tools:targetApi="o"
-                android:inputType="textPassword" />
-            </LinearLayout>
+                android:layout_below="@id/tvLogin"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="15dp"
+                android:contentDescription="@string/logo"
+                android:src="@drawable/book" />
 
-        </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"
+                android:elevation="3dp"
+                app:cardBackgroundColor="@color/colorWhite"
+                app:cardCornerRadius="15dp">
 
-
-
-    <Button
-        android:id="@+id/login"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cardView"
-        android:layout_centerInParent="true"
-        android:text="@string/login"
-        android:textColor="@color/colorWhite"
-        android:elevation="1dp"
-        android:background="@drawable/my_button"
-        android:layout_marginTop="-25dp"/>
-
-                <TextView
-                    android:id="@+id/signUp"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_margin="30dp"
-                    android:text="@string/register"
-                    android:layout_below="@id/login"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="18sp" />
-                <com.google.android.gms.common.SignInButton
-                    android:id="@+id/signIn"
-                    android:layout_below="@+id/signUp"
-                    android:layout_marginStart="50dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginBottom="30dp"/>
-                <com.facebook.login.widget.LoginButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/facebookLogin"
-                    android:layout_below="@+id/signUp"
-                    android:layout_toRightOf="@+id/signIn"
-                    android:layout_marginStart="60dp"
-                    android:layout_marginLeft="60dp"
-                    android:layout_toEndOf="@+id/signIn" />
-            </RelativeLayout>
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-12dp"
+                    android:orientation="vertical"
+                    android:padding="30dp">
+
+                    <EditText
+                        android:id="@+id/userId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="UserName"
+                        android:backgroundTint="#212F3D"
+                        android:drawableStart="@drawable/ic_account_circle_black_24dp"
+                        android:drawableLeft="@drawable/ic_account_circle_black_24dp"
+                        android:drawableTint="@color/colorPrimaryDark"
+                        android:hint="UserId"
+                        android:inputType="text"
+                        android:textColor="#212F3D"
+                        android:textCursorDrawable="@null"
+                        tools:targetApi="o" />
+
+                    <EditText
+                        android:id="@+id/pass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="Password"
+                        android:backgroundTint="#212F3D"
+                        android:drawableStart="@drawable/ic_vpn_key_black_24dp"
+                        android:drawableLeft="@drawable/ic_vpn_key_black_24dp"
+                        android:drawableTint="@color/colorPrimaryDark"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:textColor="#212F3D"
+                        android:textCursorDrawable="@null"
+                        tools:targetApi="o" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <Button
+                android:id="@+id/login"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cardView"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="-25dp"
+                android:background="@drawable/my_button"
+                android:elevation="1dp"
+                android:text="@string/login"
+                android:textColor="@color/colorWhite" />
+
+            <TextView
+                android:id="@+id/signUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/login"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="30dp"
+                android:text="@string/register"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp" />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/signIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/signUp"
+                android:layout_marginStart="50dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginBottom="30dp" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/facebookLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/signUp"
+                android:layout_marginStart="60dp"
+                android:layout_marginLeft="60dp"
+                android:layout_toEndOf="@+id/signIn"
+                android:layout_toRightOf="@+id/signIn" />
+        </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
 
