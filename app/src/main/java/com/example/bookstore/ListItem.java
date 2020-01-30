@@ -8,7 +8,7 @@ public class ListItem {
     public ListItem(String mHead, String mDesc,int mImage) {
         this.mHead = mHead;
         this.mDesc = mDesc;
-        this.mImage=mImage;
+        this.mImage = mImage;
     }
 
     public int getmImage() {
