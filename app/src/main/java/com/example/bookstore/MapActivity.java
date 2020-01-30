@@ -37,9 +37,8 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-//import com.google.android.material.snackbar.Snackbar;
-import com.mancj.materialsearchbar.MaterialSearchBar;
-import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
+
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,16 +69,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private GoogleMap map;
     private FusedLocationProviderClient mFusedLocation;
-    private PlacesClient placesClient;
-    private List<AutocompletePrediction> predictionsList;
+   // private PlacesClient placesClient;
+   // private List<AutocompletePrediction> predictionsList;
 
     private Location mLastKnownLocation;
     private LocationCallback locationCallback;
 
-    private MaterialSearchBar materialSearchBar;
     private View mapView;
     private Button confirm;
-    private TextView addrs;
+    private TextView mAddress;
 
 
 
@@ -90,9 +88,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        //materialSearchBar = findViewById(R.id.searchBar);
-        confirm = findViewById(R.id.locate);
-        addrs = findViewById(R.id.address);
+        confirm = findViewById(R.id.confirm);
+        mAddress = findViewById(R.id.address);
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
@@ -101,134 +98,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapView = mapFragment.getView();
 
         mFusedLocation = LocationServices.getFusedLocationProviderClient(MapActivity.this);
-        Places.initialize(MapActivity.this, "AIzaSyDol4I2wHY0wL6B8GhZ4Bzvxc4bvhbZGsw");
-        placesClient = Places.createClient(this);
-        final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-       /* materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
-            @Override
-            public void onSearchStateChanged(boolean enabled) {
-
-            }
-
-            @Override
-            public void onSearchConfirmed(CharSequence text) {
-                startSearch(text.toString(), true, null, true);
-            }
-
-            @Override
-            public void onButtonClicked(int buttonCode) {
-                if (buttonCode == MaterialSearchBar.BUTTON_NAVIGATION) {
-
-                } else if (buttonCode == MaterialSearchBar.BUTTON_BACK) {
-                    materialSearchBar.disableSearch();
-                }
-
-            }
-        });
-
-        materialSearchBar.addTextChangeListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-                        .setTypeFilter(TypeFilter.ADDRESS)
-                        .setSessionToken(token)
-                        .setQuery(s.toString())
-                        .build();
-
-                placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
-                        if (task.isSuccessful()) {
-                            FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
-                            if (predictionsResponse != null) {
-                                predictionsList = predictionsResponse.getAutocompletePredictions();
-                                List<String> suggestionList = new ArrayList<>();
-                                for (int i = 0; i < predictionsList.size(); i++) {
-                                    AutocompletePrediction prediction = predictionsList.get(i);
-                                    suggestionList.add(prediction.getFullText(null).toString());
-                                }
-
-                                materialSearchBar.updateLastSuggestions(suggestionList);
-                                if (!materialSearchBar.isSuggestionsVisible()) {
-                                    materialSearchBar.showSuggestionsList();
-                                }
-                            }
-
-                        } else {
-                            Log.i("mytag", "prediction fetching task unsuccessful");
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        materialSearchBar.setSuggstionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
-            @Override
-            public void OnItemClickListener(int position, View v) {
-                if (position >= predictionsList.size()) {
-                    return;
-                }
-                AutocompletePrediction selectedPrediction = predictionsList.get(position);
-                String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
-                materialSearchBar.setText(suggestion);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        materialSearchBar.clearSuggestions();
-
-                    }
-                }, 1000);
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-                    String placeId = selectedPrediction.getPlaceId();
-                    List<Place.Field> placeField = Arrays.asList(Place.Field.LAT_LNG);
-                    FetchPlaceRequest fetchPlaceRequest = FetchPlaceRequest.builder(placeId, placeField).build();
-                    placesClient.fetchPlace(fetchPlaceRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
-                        @Override
-                        public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
-                            Place place = fetchPlaceResponse.getPlace();
-                            Log.i("mytag", "place found" + place.getName());
-                            LatLng latLngOfPlace = place.getLatLng();
-                            if (latLngOfPlace != null) {
-                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOfPlace, DEFAULT_ZOOM));
-                            }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            if (e instanceof ApiException) {
-                                ApiException apiException = (ApiException) e;
-                                apiException.printStackTrace();
-                                int statusCode = apiException.getStatusCode();
-                                Log.i("mytag", "place not found" + e.getMessage());
-                                Log.i("mytag", "status code" + statusCode);
-                            }
-                        }
-                    });
-                }
-            }
-
-
-            @Override
-            public void OnItemDeleteListener(int position, View v) {
-
-            }
-        });*/
-
-
-
+        //Places.initialize(MapActivity.this, "AIzaSyDol4I2wHY0wL6B8GhZ4Bzvxc4bvhbZGsw");
+        //placesClient = Places.createClient(this);
+        //final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
 
        /* locate.setOnClickListener(new View.OnClickListener() {
@@ -294,15 +166,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
-               /* if (materialSearchBar.isSuggestionsVisible())
-                    materialSearchBar.clearSuggestions();
-                if (materialSearchBar.isSearchEnabled())
-                    materialSearchBar.disableSearch();*/
 
                 LatLng myCoordinates = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, DEFAULT_ZOOM));
                 String address = getCityName(myCoordinates);
-                addrs.setText(address);
+                mAddress.setText(address);
                 return false;
 
             }
@@ -331,7 +199,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 LatLng myCoordinates = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, DEFAULT_ZOOM));
                                 String address = getCityName(myCoordinates);
-                                addrs.setText(address);
+                                mAddress.setText(address);
 
                             } else {
                                 final LocationRequest locationRequest = LocationRequest.create();
@@ -349,7 +217,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         LatLng myCoordinates = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, DEFAULT_ZOOM));
                                         String address = getCityName(myCoordinates);
-                                        addrs.setText(address);
+                                        mAddress.setText(address);
                                         mFusedLocation.removeLocationUpdates(locationCallback);
 
                                     }

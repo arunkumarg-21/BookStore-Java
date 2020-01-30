@@ -3,6 +3,7 @@ package com.example.bookstore;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -12,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -24,19 +26,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class BookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private static final int REQ_CODE=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +43,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         ImageView img;
         TextView txt, txt1;
         final Button btCart, btBorrow;
-       final int imge;
-       EditText address;
+        final int imge;
+        EditText address;
 
 
         img = findViewById(R.id.img);
@@ -55,7 +52,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         txt1 = findViewById(R.id.desc);
         btCart = findViewById(R.id.btCart);
         btBorrow = findViewById(R.id.btBorrow);
-        address=findViewById(R.id.address);
+        address = findViewById(R.id.address);
         Intent intent = getIntent();
         final String Head = intent.getStringExtra("head");
         txt.setText(Head);
@@ -72,48 +69,37 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dexter.withActivity(BookActivity.this)
-                        .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse response) {
-                                startActivity(new Intent(getApplicationContext(),MapActivity.class));
-                            }
 
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse response) {
-                                if(response.isPermanentlyDenied()){
-                                    AlertDialog.Builder builder= new AlertDialog.Builder(BookActivity.this);
-                                    builder.setTitle("Permission Denied")
-                                            .setMessage("permission to access device location is denied.You need to go to the settings to give permmision")
-                                            .setNegativeButton("cancel",null)
-                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Intent intent = new Intent();
-                                                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                                    intent.setData(Uri.fromParts("package",getPackageName(),null));
-                                                }
-                                            })
-                                            .show();
-                                }else{
-                                    Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
-                                }
-                            }
 
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                                token.continuePermissionRequest();
-                            }
-                        })
-                        .check();
+                if (ContextCompat.checkSelfPermission(BookActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(BookActivity.this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BookActivity.this)
+                                .setTitle("Permission Required")
+                                .setMessage("Location Permission is needed")
+                                .setNegativeButton("Cancel",null)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ActivityCompat.requestPermissions(BookActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_CODE);
+                                    }
+                                });
+                    } else {
+
+                        ActivityCompat.requestPermissions(BookActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_CODE);
+
+                    }
+                } else {
+                    startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                }
+
+
             }
         });
-        /* String imge = intent.getStringExtra("img");
-         Uri fimg = Uri.parse(imge);
-         img.setImageURI(fimg);*/
 
-        List<Integer> ai = new ArrayList<Integer>();
+
+        List<Integer> ai = new ArrayList<>();
         ai.add(1);
         ai.add(2);
         ai.add(3);
@@ -128,7 +114,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         Spinner spinner = findViewById(R.id.quantity);
         spinner.setOnItemSelectedListener(this);
 
-        ArrayAdapter<Integer> aa = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,ai);
+        ArrayAdapter<Integer> aa = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, ai);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(aa);
 
@@ -144,8 +130,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View v) {
                 if (btCart.getText().equals("Go to cart")) {
                     Intent intent1 = new Intent(getApplicationContext(), BuyActivity.class);
-                    intent1.putExtra("name",Head);
-                    intent1.putExtra("img",imge);
+                    intent1.putExtra("name", Head);
+                    intent1.putExtra("img", imge);
                     startActivity(intent1);
                 } else {
                     Toast.makeText(getApplicationContext(), "Successfully Added to Cart", Toast.LENGTH_SHORT).show();
@@ -157,23 +143,37 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         btBorrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),BorrowActivity.class);
-                i.putExtra("name",Head);
-                i.putExtra("img",imge);
+                Intent i = new Intent(getApplicationContext(), BorrowActivity.class);
+                i.putExtra("name", Head);
+                i.putExtra("img", imge);
                 startActivity(i);
 
             }
         });
     }
 
-    public void onItemSelected(AdapterView<?> parent, View args1, int position, long id)
-    {
+    public void onItemSelected(AdapterView<?> parent, View args1, int position, long id) {
         String pos = parent.getItemAtPosition(position).toString();
         //Toast.makeText(getApplicationContext(),null , Toast.LENGTH_SHORT).show();
 
     }
+
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQ_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
     }
 
 
