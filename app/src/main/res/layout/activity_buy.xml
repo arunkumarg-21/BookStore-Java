@@ -17,9 +17,9 @@
         android:layout_height="?attr/actionBarSize"
         android:id="@+id/toolBar"
         android:background="@color/colorPrimary"
-        app:titleTextColor="@android:color/holo_red_dark">
+        app:titleTextColor="#ffffff">
 
-        <TextView
+       <!-- <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
@@ -28,7 +28,7 @@
             android:textSize="23sp"
             android:textColor="@android:color/white"
             android:textStyle="bold"/>
-
+-->
         <!--<ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,6 +86,7 @@
         android:layout_below="@+id/price"
         android:textColor="@android:color/white"
         android:text="@string/mBuy"
+        android:onClick="notify"
         android:layout_marginTop="25dp"
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"

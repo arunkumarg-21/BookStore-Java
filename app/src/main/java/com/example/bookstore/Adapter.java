@@ -1,6 +1,8 @@
 package com.example.bookstore;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +18,25 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     public interface ItemClickListener {
         void onItemClick(View v, int pos);
+        void onItemLongClick(View v,int pos);
     }
+
+  /*  public interface ItemLongClickListener{
+
+    }*/
 
     private List<ListItem> listItems;
     private Context context;
-    private ItemClickListener itemClickListener;
+    private ItemClickListener itemClickListener,itemLongClickListener;
+    //private ItemLongClickListener itemLongClickListener;
+    private DatabaseHelper myDb;
 
     public Adapter(List<ListItem> listItems, Context context, ItemClickListener itemClickListener) {
         this.listItems = listItems;
         this.context = context;
         this.itemClickListener = itemClickListener;
+        this.itemLongClickListener=itemClickListener;
+        myDb = new DatabaseHelper(context);
     }
 
     @NonNull
@@ -42,9 +53,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         holder.textHead.setText(listItem.getHead());
         holder.textDesc.setText(listItem.getDesc());
-        holder.imageView.setImageDrawable(context.getResources().getDrawable(listItem.getmImage()));
+
+        byte[] image  = listItem.getmImage();
+        Bitmap bitmap  = BitmapFactory.decodeByteArray(image,0,image.length);
+        holder.imageView.setImageBitmap(bitmap);
 
         holder.setItemClickListener(itemClickListener);
+       // holder.setItemClickListener(itemLongClickListener);
+        holder.setItemLongClickListener(itemLongClickListener);
     }
 
     @Override
@@ -52,12 +68,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return listItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
 
         TextView textHead;
         TextView textDesc;
         ImageView imageView;
-        ItemClickListener itemClickListener;
+        ItemClickListener itemClickListener,itemLongClickListener;
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -66,6 +82,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             textDesc = itemView.findViewById(R.id.Desc);
             imageView = itemView.findViewById(R.id.img);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
 
 
         }
@@ -76,9 +93,25 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         }
 
+        @Override
+        public boolean onLongClick(View v){
+            this.itemLongClickListener.onItemLongClick(v,getLayoutPosition());
+            return true;
+        }
+
         public void setItemClickListener(ItemClickListener ic) {
             this.itemClickListener = ic;
+            //this.itemLongClickListener = ic;
+
         }
+        public void setItemLongClickListener(ItemClickListener ilc){
+            this.itemLongClickListener = ilc;
+        }
+       /* public void setItemLongClickListener(ItemLongClickListener ilc){
+            this.itemLongClickListener = ilc;
+        }*/
+
+
     }
 
 

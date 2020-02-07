@@ -163,7 +163,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
-        map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+        map.setOnMyLocationButtonClickListener( new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
 

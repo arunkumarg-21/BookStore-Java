@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.se.omapi.Session;
 import android.text.Editable;
@@ -191,6 +194,36 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             }
         });
 
+
+    }
+
+    public void onResume() {
+        super.onResume();
+
+       @SuppressLint("WrongConstant") SharedPreferences sh = getSharedPreferences("Login",MODE_APPEND);
+
+
+        String pass = sh.getString("password",null);
+
+        String value = sh.getString("id",null);
+
+        if (value != null && pass != null){
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        }
+
+    }
+
+    public  void onPause() {
+
+        super.onPause();
+
+        SharedPreferences sh = getSharedPreferences("Login",MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sh.edit();
+
+        editor.putString("id", eTextID.getText().toString());
+        editor.putString("password",eTextPass.getText().toString());
+        editor.commit();
 
     }
 

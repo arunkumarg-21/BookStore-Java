@@ -1,15 +1,20 @@
 package com.example.bookstore;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,16 +22,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class BuyActivity extends AppCompatActivity {
 
-    private static final String CHANNEL_ID ="Notify" ;
+    private static final String CHANNEL_ID ="channel" ;
+    int notificationId=1;
+    private NotificationManagerCompat notificationManager;
+    NotificationManager manager=null;
     ImageView iV;
     TextView tV,price;
     EditText address;
     Button mBuy;
+    int img;
+    String Name;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,32 +53,49 @@ public class BuyActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        String Name = intent.getStringExtra("name");
+        Name = intent.getStringExtra("name");
         tV.setText(Name);
-        int img = intent.getIntExtra("img",0);
+        img = intent.getIntExtra("img",0);
         iV.setImageResource(img);
-        
-        mBuy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createNotificationChannel();
-                addNotification();
-            }
-        });
 
+
+        notificationManager = NotificationManagerCompat.from(BuyActivity.this);
 
     }
 
-    private void createNotificationChannel() {
-        
-    }
+    public void notify(View v){
+        Intent intent = new Intent(this,BuyActivity.class);
+        intent.putExtra("name",Name);
+        intent.putExtra("img",img);
+        TaskStackBuilder stackBuilder=TaskStackBuilder.create(BuyActivity.this);
+        stackBuilder.addNextIntentWithParentStack(intent);
+        PendingIntent pendingIntent=stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
 
-    private void addNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID);
+        builder.setContentTitle("BookStore")
+                .setContentText("Book Order Placed")
                 .setSmallIcon(R.drawable.notification_icon)
-                .setContentTitle("New Notification")
-                .setContentText("You Received new message ")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setTicker("Ticker")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                .bigText("New Message from the BookStore App."))
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(notificationId,builder.build());
     }
 
+    /*private void createNotificationChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+        
+    }
+*/
 }

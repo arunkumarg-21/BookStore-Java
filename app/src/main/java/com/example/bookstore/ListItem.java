@@ -3,19 +3,19 @@ package com.example.bookstore;
 public class ListItem {
     private String mHead;
     private String mDesc;
-    private int mImage;
+    private byte[] mImage;
 
-    public ListItem(String mHead, String mDesc,int mImage) {
+    public ListItem(String mHead, String mDesc,byte[] mImage) {
         this.mHead = mHead;
         this.mDesc = mDesc;
         this.mImage = mImage;
     }
 
-    public int getmImage() {
+    public byte[] getmImage() {
         return mImage;
     }
 
-    public void setmImage(int mImage) {
+    public void setmImage(byte[] mImage) {
         this.mImage = mImage;
     }
 

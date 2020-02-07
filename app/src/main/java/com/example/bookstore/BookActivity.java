@@ -3,10 +3,12 @@ package com.example.bookstore;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,17 +36,19 @@ import java.util.List;
 public class BookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int REQ_CODE=1;
+    ImageView img;
+    TextView txt, txt1;
+    Button btCart, btBorrow;
+    byte[] imge;
+    EditText address;
+    Toolbar toolbar;
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
 
         //ActionBar actionBar = getSupportActionBar();
-        ImageView img;
-        TextView txt, txt1;
-        final Button btCart, btBorrow;
-        final int imge;
-        EditText address;
 
 
         img = findViewById(R.id.img);
@@ -53,13 +57,34 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         btCart = findViewById(R.id.btCart);
         btBorrow = findViewById(R.id.btBorrow);
         address = findViewById(R.id.address);
+        toolbar = findViewById(R.id.toolBar);
+
+
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+        toolbar.setTitle("BookStore");
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            }
+        });
+
+
         Intent intent = getIntent();
         final String Head = intent.getStringExtra("head");
         txt.setText(Head);
         String Desc = intent.getStringExtra("desc");
         txt1.setText(Desc);
-        imge = intent.getIntExtra("image", 0);
-        img.setImageResource(imge);
+        imge = intent.getByteArrayExtra("image");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imge,0,imge.length);
+        img.setImageBitmap(bitmap);
+
 
        /* if(ContextCompat.checkSelfPermission(BookActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
             finish();
@@ -75,8 +100,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(BookActivity.this,
                             Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(BookActivity.this)
-                                .setTitle("Permission Required")
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BookActivity.this);
+                               builder.setTitle("Permission Required")
                                 .setMessage("Location Permission is needed")
                                 .setNegativeButton("Cancel",null)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -84,7 +109,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                                     public void onClick(DialogInterface dialog, int which) {
                                         ActivityCompat.requestPermissions(BookActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_CODE);
                                     }
-                                });
+                                }).show();
                     } else {
 
                         ActivityCompat.requestPermissions(BookActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_CODE);
@@ -100,16 +125,10 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         List<Integer> ai = new ArrayList<>();
-        ai.add(1);
-        ai.add(2);
-        ai.add(3);
-        ai.add(4);
-        ai.add(5);
-        ai.add(6);
-        ai.add(7);
-        ai.add(8);
-        ai.add(9);
-        ai.add(10);
+
+       for(int i=1;i<=10;i++){
+           ai.add(i);
+       }
 
         Spinner spinner = findViewById(R.id.quantity);
         spinner.setOnItemSelectedListener(this);

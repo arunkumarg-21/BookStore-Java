@@ -26,5 +26,7 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="facebook_app_id">1030225210679950</string>
     <string name="fb_login_protocol_scheme">fb1030225210679950</string>
+    <string name="channel_name">BookStore</string>
+    <string name="channel_description">New Message</string>
 
 </resources>
