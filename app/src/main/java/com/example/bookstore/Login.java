@@ -178,7 +178,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(eTextID.getText().toString().isEmpty()&&eTextPass.getText().toString().isEmpty()){
+                if(eTextID.getText().toString().isEmpty()||eTextPass.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(),"Please Enter Details",Toast.LENGTH_LONG).show();
                 }else{
                     startActivity(new Intent(getApplicationContext(),MainActivity.class));
@@ -200,16 +200,24 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     public void onResume() {
         super.onResume();
 
-       @SuppressLint("WrongConstant") SharedPreferences sh = getSharedPreferences("Login",MODE_APPEND);
+       @SuppressLint("WrongConstant") SharedPreferences sh = getSharedPreferences("Login",Context.MODE_PRIVATE);
 
 
-        String pass = sh.getString("password",null);
 
-        String value = sh.getString("id",null);
+       if(sh.getString("id",null) != null) {
 
-        if (value != null && pass != null){
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-        }
+           String pass = sh.getString("password", null);
+
+           String value = sh.getString("id", null);
+
+           System.out.println("Id========"+value);
+           System.out.println("password========="+pass);
+
+           if (!(value.isEmpty() && pass.isEmpty())) {
+               startActivity(new Intent(getApplicationContext(), MainActivity.class));
+           }
+       }
+
 
     }
 
@@ -217,13 +225,13 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
         super.onPause();
 
-        SharedPreferences sh = getSharedPreferences("Login",MODE_PRIVATE);
+        SharedPreferences sh = getSharedPreferences("Login",Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sh.edit();
 
         editor.putString("id", eTextID.getText().toString());
         editor.putString("password",eTextPass.getText().toString());
-        editor.commit();
+        editor.apply();
 
     }
 

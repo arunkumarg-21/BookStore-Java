@@ -7,28 +7,35 @@
             android:id="@+id/nav_book"
             android:icon="@drawable/book"
             android:iconTint="@android:color/black"
-            android:title="Book" />
+            android:title="Book"
+            android:checkable="true" />
         <item
             android:id="@+id/nav_cart"
             android:icon="@drawable/ic_shopping_cart"
-            android:title="Cart" />
+            android:title="Cart"
+            android:checkable="true"/>
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_account_circle_black_24dp"
-            android:title="LogOut" />
+            android:title="LogOut"
+            android:checkable="true"/>
     </group>
 
+    <group  android:checkableBehavior="single">
     <item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_share"
-                android:title="Share" />
+                android:title="Share"
+                android:checkable="true"/>
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_send_black_24dp"
-                android:title="Send" />
+                android:title="Send"
+                android:checkable="true"/>
         </menu>
     </item>
+    </group>
 
 </menu>

@@ -7,12 +7,13 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.bookstore"
-        minSdkVersion 16
+        minSdkVersion 20
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -40,7 +41,18 @@ dependencies {
     implementation "androidx.core:core-ktx:1.1.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
+   // implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
+    def multidex_version = "2.0.1"
+    implementation "androidx.multidex:multidex:$multidex_version"
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    /*implementation 'com.payumoney.sdkui:plug-n-play:1.6.0'
+    implementation 'com.payumoney.core:payumoney-sdk:7.4.4'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
+*/
 
 }
 apply plugin: 'com.google.gms.google-services'

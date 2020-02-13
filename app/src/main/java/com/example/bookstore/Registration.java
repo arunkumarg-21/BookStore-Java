@@ -40,6 +40,7 @@ public class Registration extends AppCompatActivity {
                 }else {
 
                     Toast.makeText(getApplicationContext(),"Registration Successful",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Registration.this,MainActivity.class));
 
                             }
                         }

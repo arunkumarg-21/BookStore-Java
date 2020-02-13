@@ -6,8 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".UploadActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
     <FrameLayout
         android:id="@+id/frameLayout"
+        android:layout_below="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_margin="15dp"
         android:layout_height="160dp"

@@ -1,8 +1,11 @@
 package com.example.bookstore;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +22,7 @@ public class BorrowActivity extends AppCompatActivity implements AdapterView.OnI
 
     TextView head;
     ImageView img;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +31,26 @@ public class BorrowActivity extends AppCompatActivity implements AdapterView.OnI
 
         head=findViewById(R.id.name);
         img=findViewById(R.id.img);
+        toolbar=findViewById(R.id.toolBar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
         Intent intent=getIntent();
         String  name = intent.getStringExtra("name");
         head.setText(name);
-        int imge=intent.getIntExtra("img",0);
-        img.setImageResource(imge);
+        byte[] imge=intent.getByteArrayExtra("img");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imge,0,imge.length);
+        img.setImageBitmap(bitmap);
 
         List<String> ai = new ArrayList<>();
         ai.add("3 days");

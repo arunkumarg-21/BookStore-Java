@@ -2,13 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/miCompose"
+        android:id="@+id/mUpload"
         android:icon="@drawable/book"
         app:showAsAction="ifRoom"
         android:title="Compose">
     </item>
     <item
-        android:id="@+id/miProfile"
+        android:id="@+id/mProfile"
         android:icon="@drawable/ic_account_circle_black_24dp"
         android:iconTint="@color/colorWhite"
         app:showAsAction="ifRoom"

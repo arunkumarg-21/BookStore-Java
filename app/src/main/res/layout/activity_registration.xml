@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,9 +10,8 @@
     tools:context=".MainActivity"
     android:background="@drawable/bgimage">
 
-    <ScrollView
 
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
         android:fillViewport="true"
         android:layout_height="match_parent">
@@ -150,6 +150,7 @@
         android:elevation="1dp"
         android:background="@drawable/my_button"
         android:layout_marginTop="-24dp"/>
-</RelativeLayout>
+
+        </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

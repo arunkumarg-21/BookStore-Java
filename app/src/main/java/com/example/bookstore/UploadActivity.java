@@ -3,6 +3,7 @@ package com.example.bookstore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.widget.TooltipCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -32,8 +34,10 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
-public class UploadActivity extends MainActivity {
+public class UploadActivity extends AppCompatActivity {
 
     ImageButton imageView;
     TextView textView;
@@ -43,12 +47,13 @@ public class UploadActivity extends MainActivity {
     Uri imguri;
     Button buttonUpload;
     DatabaseHelper myDb;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        }*/
             super.onCreate(savedInstanceState);
-        }
         setContentView(R.layout.activity_upload);
         myDb = new DatabaseHelper(this);
 
@@ -59,6 +64,22 @@ public class UploadActivity extends MainActivity {
         mName = findViewById(R.id.bookName);
         mDescription = findViewById(R.id.desc);
         mPrice = findViewById(R.id.price);
+        toolbar = findViewById(R.id.toolBar);
+
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //toolbar.setTitle("Hello");
+        getSupportActionBar().setTitle("Hello");
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*startActivity(new Intent(UploadActivity.this,MainActivity.class));*/
+               finish();
+            }
+        });
 
 
 
@@ -196,7 +217,9 @@ public class UploadActivity extends MainActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openCamera();
                 } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                   Toast toast = Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.CENTER,0,0);
+                            toast.show();
                 }
         }
     }

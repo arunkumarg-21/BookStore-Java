@@ -66,12 +66,11 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
-        toolbar.setTitle("BookStore");
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                //startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                finish();
             }
         });
 

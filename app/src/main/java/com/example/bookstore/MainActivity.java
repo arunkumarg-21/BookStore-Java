@@ -2,6 +2,7 @@ package com.example.bookstore;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +36,7 @@ import java.util.List;
 
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Adapter.ItemClickListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Adapter.ItemClickListener {
 
     Toolbar toolbar;
     DatabaseHelper myDb;
@@ -57,6 +59,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        toolbar./**/
 
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Are you sure want to exit?")
+                        .setNegativeButton("cancel",null)
+                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+            }
+        });
 
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -90,11 +106,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        /*adapter = new Adapter(listItems, MainActivity.this, this);
         recyclerView.setAdapter(adapter);*/
 
-    }
-
-    protected void onResume() {
-        super.onResume();
-
         listItems = new ArrayList<>();
 
         listItems = myDb.getAllData();
@@ -108,10 +119,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }else{
 
-            Toast.makeText(getApplicationContext(),"No Record",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this,"No Record",Toast.LENGTH_SHORT).show();
         }
 
     }
+
 
     private byte[] drawableToByte(Drawable book) {
         Bitmap bitmap = ((BitmapDrawable)book).getBitmap();
@@ -120,6 +132,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         byte[] bytes = stream.toByteArray();
         return bytes;
 
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }else {
+
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+        }
     }
 
     @Override
@@ -132,10 +159,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.miCompose:
-                startActivity(new Intent(getApplicationContext(), UploadActivity.class));
+            case R.id.mUpload:
+                Intent i = new Intent(this,UploadActivity.class);
+                startActivity(i);
                 break;
-            case R.id.miProfile:
+            case R.id.mProfile:
                 Toast.makeText(this, "profile is opted", Toast.LENGTH_SHORT).show();
                 break;
 
@@ -147,15 +175,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_cart:
+                drawerLayout.closeDrawer(GravityCompat.START);
                 Toast.makeText(this, "Cart is opted", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_book:
-                Toast.makeText(this, "Book is opted", Toast.LENGTH_SHORT).show();
+                drawerLayout.closeDrawer(GravityCompat.START);
+                Intent i = new Intent(this,UploadActivity.class);
+                startActivity(i);
                 break;
             case R.id.nav_logout:
+                drawerLayout.closeDrawer(GravityCompat.START);
                 Toast.makeText(this, "Logging out is opted", Toast.LENGTH_SHORT).show();
                 break;
+
+            case R.id.nav_share:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                Toast.makeText(this,"share",Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.nav_send:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                Toast.makeText(this,"send",Toast.LENGTH_SHORT).show();
+                break;
         }
+
         return false;
     }
 
@@ -195,12 +238,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                DatabaseHelper db = new DatabaseHelper(MainActivity.this);
                 dialog.dismiss();
                 myDb.delete(name);
-                System.out.println("dddddd=======");
                 adapter.notifyDataSetChanged();
             }
         });
         builder.show();
-        System.out.println("Finished=======");
+
         adapter.notifyDataSetChanged();
     }
 
