@@ -210,11 +210,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
            String value = sh.getString("id", null);
 
-           System.out.println("Id========"+value);
-           System.out.println("password========="+pass);
 
            if (!(value.isEmpty() && pass.isEmpty())) {
-               startActivity(new Intent(getApplicationContext(), MainActivity.class));
+               startActivity(new Intent(Login.this, MainActivity.class));
            }
        }
 

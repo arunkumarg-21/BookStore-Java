@@ -20,12 +20,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.bookstore.activity.MyReceiver;
+/*
 import com.payumoney.core.PayUmoneySdkInitializer;
 import com.payumoney.core.entity.TransactionResponse;
 import com.payumoney.sdkui.ui.utils.PayUmoneyFlowManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+*/
 
 
 
@@ -90,7 +92,7 @@ public class BuyActivity extends AppCompatActivity {
                 email = intent.getExtras().getString("email");
                 amount=intent.getExtras().getString("amount");
 
-                startpay();
+                startPay();
 
             }
         });*/
@@ -112,66 +114,7 @@ public class BuyActivity extends AppCompatActivity {
 
     }
 
-  /*  private void startpay() {
 
-        builder.setAmount(amount)
-                .setTxnId(txtid)
-                .setEmail(email)
-                .setProductName(prodname)
-                .setFirstName(firstname)
-                .setsUrl("https://www.payumoney.com/mobileapp/payumoney/success.php")
-                .setfUrl("https://www.payumoney.com/mobileapp/payumoney/failure.php")
-                .setUdf1("")
-                .setUdf2("")
-                .setUdf3("")
-                .setUdf4("")
-                .setUdf5("")
-                .setUdf6("")
-                .setUdf7("")
-                .setUdf8("")
-                .setUdf9("")
-                .setUdf10("")
-                .setIsDebug(true)
-                .setKey(merchantkey)
-                .setMerchantId(merchantId);
-
-        try{
-            paymentParam = builder.build();
-            getHashKey();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void getHashKey() {
-        ServiceWorkerClient serviceWorkerClient = new ServiceWorkerClient(null);
-        Call<String> call = service.newHashCall(merchantkey, txnid, amount, prodname,
-                firstname, email);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.e(TAG, "hash res "+response.body());
-                String merchantHash= response.body();
-                if (merchantHash.isEmpty() || merchantHash.equals("")) {
-                    Toast.makeText(StartPaymentActivity.this, "Could not generate hash", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "hash empty");
-                } else {
-                    // mPaymentParams.setMerchantHash(merchantHash);
-                    paymentParam.setMerchantHash(merchantHash);
-                    // Invoke the following function to open the checkout page.
-                    // PayUmoneyFlowManager.startPayUMoneyFlow(paymentParam, StartPaymentActivity.this,-1, true);
-                    PayUmoneyFlowManager.startPayUMoneyFlow(paymentParam, StartPaymentActivity.this, R.style.AppTheme_default, false);
-                }
-            }
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e(TAG, "hash error "+ t.toString());
-            }
-        });
-
-    }
-*/
     private void configureReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.example.BookStore");
@@ -186,40 +129,9 @@ public class BuyActivity extends AppCompatActivity {
          i.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
          sendBroadcast(i);
 
-        /*Intent intent = new Intent(this,BuyActivity.class);
-        intent.putExtra("name",Name);
-        intent.putExtra("img",img);
-        TaskStackBuilder stackBuilder=TaskStackBuilder.create(BuyActivity.this);
-        stackBuilder.addNextIntentWithParentStack(intent);
-        PendingIntent pendingIntent=stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID);
-        builder.setContentTitle("BookStore")
-                .setContentText("Book Order Placed")
-                .setSmallIcon(R.drawable.notification_icon)
-                .setTicker("Ticker")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                .bigText("New Message from the BookStore App."))
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-
-        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationId,builder.build());*/
     }
 
-    /*private void createNotificationChannel() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-        
-    }
-*/
     public void onDestroy() {
 
         super.onDestroy();

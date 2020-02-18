@@ -72,7 +72,6 @@ public class BorrowActivity extends AppCompatActivity implements AdapterView.OnI
     public void onItemSelected(AdapterView<?> parent, View args1, int position, long id)
     {
         String pos = parent.getItemAtPosition(position).toString();
-        //Toast.makeText(getApplicationContext(),null , Toast.LENGTH_SHORT).show();
 
     }
     public void onNothingSelected(AdapterView<?> arg0) {

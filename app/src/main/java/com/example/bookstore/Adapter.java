@@ -21,14 +21,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         void onItemLongClick(View v,int pos);
     }
 
-  /*  public interface ItemLongClickListener{
-
-    }*/
-
     private List<ListItem> listItems;
     private Context context;
     private ItemClickListener itemClickListener,itemLongClickListener;
-    //private ItemLongClickListener itemLongClickListener;
     private DatabaseHelper myDb;
 
     public Adapter(List<ListItem> listItems, Context context, ItemClickListener itemClickListener) {
@@ -59,7 +54,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         holder.imageView.setImageBitmap(bitmap);
 
         holder.setItemClickListener(itemClickListener);
-       // holder.setItemClickListener(itemLongClickListener);
         holder.setItemLongClickListener(itemLongClickListener);
     }
 
@@ -90,7 +84,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             this.itemClickListener.onItemClick(v, getLayoutPosition());
-
         }
 
         @Override
@@ -101,16 +94,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         public void setItemClickListener(ItemClickListener ic) {
             this.itemClickListener = ic;
-            //this.itemLongClickListener = ic;
 
         }
+
         public void setItemLongClickListener(ItemClickListener ilc){
             this.itemLongClickListener = ilc;
         }
-       /* public void setItemLongClickListener(ItemLongClickListener ilc){
-            this.itemLongClickListener = ilc;
-        }*/
-
 
     }
 

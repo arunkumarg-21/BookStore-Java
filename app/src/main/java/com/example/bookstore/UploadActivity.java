@@ -147,7 +147,7 @@ public class UploadActivity extends AppCompatActivity {
     private byte[] imageViewToByte(ImageView image) {
         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 30, stream);
         byte[] byteArray = stream.toByteArray();
         long size = byteArray.length;
         if (size > 1024 * 1024) {

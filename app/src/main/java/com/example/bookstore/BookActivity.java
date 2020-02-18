@@ -48,8 +48,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
 
-        //ActionBar actionBar = getSupportActionBar();
-
 
         img = findViewById(R.id.img);
         txt = findViewById(R.id.textViewHead);
@@ -69,7 +67,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(getApplicationContext(),MainActivity.class));
                 finish();
             }
         });
@@ -81,19 +78,14 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         String Desc = intent.getStringExtra("desc");
         txt1.setText(Desc);
         imge = intent.getByteArrayExtra("image");
-        Bitmap bitmap = BitmapFactory.decodeByteArray(imge,0,imge.length);
-        img.setImageBitmap(bitmap);
-
-
-       /* if(ContextCompat.checkSelfPermission(BookActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
-            finish();
-            return;
-        }*/
+        if(imge!=null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imge, 0, imge.length);
+            img.setImageBitmap(bitmap);
+        }
 
         address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 if (ContextCompat.checkSelfPermission(BookActivity.this,
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -118,7 +110,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                     startActivity(new Intent(getApplicationContext(), MapActivity.class));
                 }
 
-
             }
         });
 
@@ -137,11 +128,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setAdapter(aa);
 
 
-        /*byte[] mBytes = getIntent().getByteArrayExtra("image");
-
-         Bitmap bitmap = BitmapFactory.decodeByteArray(mBytes,0,mBytes.length);
-
-         img.setImageBitmap(bitmap);*/
 
         btCart.setOnClickListener(new View.OnClickListener() {
             @Override

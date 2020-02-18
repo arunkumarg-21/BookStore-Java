@@ -2,24 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="110dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="80dp"
         android:layout_gravity="center"
-        android:src="@drawable/books"
-        android:scaleType="fitXY"
+        android:src="@drawable/book_logo"
+        android:scaleType="centerInside"
         android:contentDescription="@string/app_name"
-        android:layout_marginTop="240dp"/>
-
+        android:layout_marginTop="120dp"/>
     <ProgressBar
-        android:layout_width="130dp"
-        android:layout_height="30dp"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:indeterminateTint="@android:color/holo_blue_dark"/>
+        android:indeterminateTint="@color/colorPrimaryDark" />
 
 </LinearLayout>

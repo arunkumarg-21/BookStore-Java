@@ -33,9 +33,7 @@ public class FCMActivity extends FirebaseMessagingService {
                 }
 
                 String token = task.getResult().getToken();
-
                 Log.d("Firebase Service", token);
-                //Toast.makeText(FCMActivity.this, "Refreshed Id"+token, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -71,7 +69,6 @@ public class FCMActivity extends FirebaseMessagingService {
         if (manager != null) {
             manager.notify(1, builder.build());
         }
-
 
     }
 }
