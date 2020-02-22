@@ -1,13 +1,9 @@
 package com.example.bookstore;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -16,10 +12,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -30,23 +26,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bookstore.activity.CartActivity;
+import com.example.bookstore.model.ListItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Adapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyAdapter.ItemClickListener {
 
     Toolbar toolbar;
     DatabaseHelper myDb;
@@ -55,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<ListItem> listItems;
+    ImageButton cartButton;
 
 
     @Override
@@ -65,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         toolbar = findViewById(R.id.toolBar);
+        cartButton = findViewById(R.id.cart_button);
+
 
 
         setSupportActionBar(toolbar);
@@ -99,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(MainActivity.this,UploadActivity.class));
             }
         });
-
+        fab.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -124,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listItems = new ArrayList<>();
         listItems = myDb.getAllData();
         if(listItems.size()>0){
-            adapter = new Adapter(listItems,this,this);
+            adapter = new MyAdapter(listItems,this,this);
             recyclerView.setAdapter(adapter);
 
         }else{
@@ -170,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.mUpload:
-                Intent i = new Intent(this,UploadActivity.class);
+            case R.id.mCart:
+                Intent i = new Intent(MainActivity.this, CartActivity.class);
                 startActivity(i);
                 break;
         }
@@ -254,5 +247,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         builder.show();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void cartInsert(View v, int pos) {
+        ListItem listItem = listItems.get(pos);
+        String head = listItem.getHead();
+        String desc = listItem.getDesc();
+        byte[] image = listItem.getmImage();
+
+
+        boolean result = myDb.insertCart(head,desc,image,100);
+        if(result){
+            Toast.makeText(MainActivity.this,"Added successful",Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(MainActivity.this,"Added failed",Toast.LENGTH_SHORT).show();
+        }
     }
 }

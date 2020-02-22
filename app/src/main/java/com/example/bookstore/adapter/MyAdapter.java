@@ -6,19 +6,23 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bookstore.model.ListItem;
+
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
+ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     public interface ItemClickListener {
         void onItemClick(View v, int pos);
         void onItemLongClick(View v,int pos);
+        void cartInsert(View v,int pos);
     }
 
     private List<ListItem> listItems;
@@ -26,7 +30,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private ItemClickListener itemClickListener,itemLongClickListener;
     private DatabaseHelper myDb;
 
-    public Adapter(List<ListItem> listItems, Context context, ItemClickListener itemClickListener) {
+    public MyAdapter(List<ListItem> listItems, Context context, ItemClickListener itemClickListener) {
         this.listItems = listItems;
         this.context = context;
         this.itemClickListener = itemClickListener;
@@ -67,6 +71,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         TextView textHead;
         TextView textDesc;
         ImageView imageView;
+        ImageButton cartButton;
         ItemClickListener itemClickListener,itemLongClickListener;
 
         public ViewHolder(@NonNull final View itemView) {
@@ -75,15 +80,27 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             textHead = itemView.findViewById(R.id.textViewHead);
             textDesc = itemView.findViewById(R.id.Desc);
             imageView = itemView.findViewById(R.id.img);
+            cartButton = itemView.findViewById(R.id.cart_button);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-
-
+            cartButton.setOnClickListener(this);
+            imageView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            this.itemClickListener.onItemClick(v, getLayoutPosition());
+            switch (v.getId()) {
+                case R.id.img:
+                    System.out.println("========image=========");
+                    break;
+                case R.id.cart_button:
+                    this.itemClickListener.cartInsert(v, getLayoutPosition());
+                    break;
+                default:
+                    System.out.println("ID============"+v.getId());
+                    System.out.println("ImageID============"+R.id.img);
+                    this.itemClickListener.onItemClick(v, getLayoutPosition());
+            }
         }
 
         @Override

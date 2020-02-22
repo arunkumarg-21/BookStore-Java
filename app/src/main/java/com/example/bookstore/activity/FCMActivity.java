@@ -50,6 +50,7 @@ public class FCMActivity extends FirebaseMessagingService {
     private void sendMyNotification(String body) {
         Intent intent = new Intent(FCMActivity.this,MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("message",body);
         PendingIntent pendingIntent = PendingIntent.getActivity(FCMActivity.this,0,intent,PendingIntent.FLAG_ONE_SHOT);
 
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

@@ -51,9 +51,7 @@ public class UploadActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        }*/
-            super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
         myDb = new DatabaseHelper(this);
 
@@ -76,7 +74,6 @@ public class UploadActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*startActivity(new Intent(UploadActivity.this,MainActivity.class));*/
                finish();
             }
         });
@@ -88,7 +85,6 @@ public class UploadActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                //TooltipCompat.setTooltipText(v,"choose image");
                 textView.setVisibility(View.GONE);
                 onSelectImage();
 
@@ -100,23 +96,13 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                boolean b = addData();
+
                /*if(b){
 
                }*/
             }
         });
 
-     /*   buttonUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                intent.putExtra("head",mName.getText().toString());
-                intent.putExtra("desc",mDescription.getText().toString());
-                intent.putExtra("image",imageView.getId());
-                intent.putExtra("price",mPrice.getText());
-                startActivity(intent);
-            }
-        });*/
 
 
     }
