@@ -1,6 +1,7 @@
-package com.example.bookstore;
+package com.example.bookstore.activity;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -16,9 +17,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.bookstore.R;
 import com.example.bookstore.activity.MyReceiver;
 /*
 import com.payumoney.core.PayUmoneySdkInitializer;
@@ -30,22 +33,19 @@ import retrofit2.Response;
 */
 
 
-
-
 public class BuyActivity extends AppCompatActivity {
 
-    private static final String CHANNEL_ID ="channel" ;
-    int notificationId=1;
-    //private NotificationManagerCompat notificationManager;
-   // NotificationManager manager=null;
+    private static final String CHANNEL_ID = "channel";
+    int notificationId = 1;
     ImageView iV;
-    TextView tV,price;
+    TextView tV, price;
     EditText address;
-    Button mBuy;
+    Button mBuy, mDiscard;
     byte[] img;
     String Name;
     Toolbar toolbar;
     MyReceiver receiver;
+
 
    /* PayUmoneySdkInitializer.PaymentParam.Builder builder = new PayUmoneySdkInitializer.PaymentParam.Builder();
 
@@ -64,24 +64,20 @@ public class BuyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
 
-        iV = findViewById(R.id.image);
-        tV  =findViewById(R.id.name);
-        price=findViewById(R.id.price);
-        mBuy=findViewById(R.id.buy);
-        toolbar = findViewById(R.id.toolBar);
+        initializeView();
+        toolbarInitialize();
+        buttonClickListener();
+        gettingPassedData();
+        configureReceiver();
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        price.setText("Price: 120");
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+       /* mDiscard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
-        });
-
-        price.setText("Price: 120");
+        });*/
 
 
        /* mBuy.setOnClickListener(new View.OnClickListener() {
@@ -96,38 +92,76 @@ public class BuyActivity extends AppCompatActivity {
 
             }
         });*/
+        //notificationManager = NotificationManagerCompat.from(BuyActivity.this);
+    }
 
 
+    private void initializeView() {
 
+        iV = findViewById(R.id.image);
+        tV = findViewById(R.id.name);
+        price = findViewById(R.id.price);
+        mBuy = findViewById(R.id.buy);
+        toolbar = findViewById(R.id.toolBar);
+        mBuy = findViewById(R.id.buy);
+        mDiscard = findViewById(R.id.discard);
+    }
+
+    private void toolbarInitialize() {
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    private void buttonClickListener() {
+        mDiscard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(BuyActivity.this);
+                builder.setTitle("Delete")
+                        .setMessage("Are you sure want to leave?")
+                        .setNegativeButton("Cancel", null)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+            }
+        });
+    }
+
+    private void gettingPassedData() {
 
         Intent intent = getIntent();
         Name = intent.getStringExtra("name");
         tV.setText(Name);
         img = intent.getByteArrayExtra("img");
-        Bitmap bitmap = BitmapFactory.decodeByteArray(img,0,img.length);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
         iV.setImageBitmap(bitmap);
-
-        configureReceiver();
-
-
-        //notificationManager = NotificationManagerCompat.from(BuyActivity.this);
-
     }
 
 
     private void configureReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.example.BookStore");
-        receiver =  new MyReceiver();
-        registerReceiver(receiver,intentFilter);
-
+        receiver = new MyReceiver();
+        registerReceiver(receiver, intentFilter);
     }
 
-    public void notify(View v){
-         Intent i = new Intent();
-         i.setAction("com.example.BookStore");
-         i.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-         sendBroadcast(i);
+    public void notify(View v) {
+        Intent i = new Intent();
+        i.setAction("com.example.BookStore");
+        i.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        sendBroadcast(i);
 
 
     }
@@ -135,7 +169,6 @@ public class BuyActivity extends AppCompatActivity {
     public void onDestroy() {
 
         super.onDestroy();
-
         unregisterReceiver(receiver);
 
     }

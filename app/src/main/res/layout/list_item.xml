@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -38,26 +38,27 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginStart="6dp" />
 
-
-
                 <RatingBar
+                    android:id="@+id/rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/Desc"
+                    android:theme="@style/RatingBar"
                     android:layout_toRightOf="@+id/img"
                     android:layout_marginLeft="10dp"
                     style="?android:attr/ratingBarStyleSmall"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="8dp"
                     android:layout_toEndOf="@+id/img" />
 
                 <TextView
-                    android:id="@+id/textViewHead"
+                    android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/img"
                     android:padding="3dp"
                     android:text="@string/heading"
                     android:textSize="15sp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginLeft="6dp"
                     android:layout_toEndOf="@+id/img"
                     android:layout_marginStart="6dp" />
@@ -66,14 +67,27 @@
                     android:id="@+id/Desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textViewHead"
+                    android:layout_below="@+id/name"
                     android:layout_toRightOf="@+id/img"
-                    android:layout_margin="8dp"
                     android:maxLines="2"
                     android:ellipsize="end"
                     android:text="@string/description"
                     android:textSize="12sp"
+                    android:layout_marginStart="6dp"
                     android:layout_toEndOf="@+id/img" />
+
+                <ImageButton
+                    android:id="@+id/cart_button"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/rating"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    app:srcCompat="@drawable/ic_add_shopping_cart"
+                    android:background=" #76d7c4 "/>
+
 
 
 

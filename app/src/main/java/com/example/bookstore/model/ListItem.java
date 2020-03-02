@@ -1,4 +1,4 @@
-package com.example.bookstore;
+package com.example.bookstore.model;
 
 public class ListItem {
     private String mHead;
@@ -6,14 +6,16 @@ public class ListItem {
     private byte[] mImage;
     private int Price;
 
-    public ListItem(String mHead, String mDesc, byte[] mImage) {
+    /*public ListItem(String mHead, String mDesc, byte[] mImage) {
         this.mHead = mHead;
         this.mDesc = mDesc;
         this.mImage = mImage;
-    }
+    }*/
 
     public ListItem(String mHead,String mDesc, byte[] mImage,int Price){
-        this(mHead,mDesc,mImage);
+        this.mHead = mHead;
+        this.mDesc = mDesc;
+        this.mImage = mImage;
         this.Price = Price;
     }
 

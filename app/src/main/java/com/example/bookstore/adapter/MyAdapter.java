@@ -1,4 +1,4 @@
-package com.example.bookstore;
+package com.example.bookstore.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,11 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bookstore.util.DatabaseHelper;
+import com.example.bookstore.R;
 import com.example.bookstore.model.ListItem;
 
 import java.util.List;
@@ -50,7 +53,7 @@ import java.util.List;
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final ListItem listItem = listItems.get(position);
 
-        holder.textHead.setText(listItem.getHead());
+        holder.textName.setText(listItem.getHead());
         holder.textDesc.setText(listItem.getDesc());
 
         byte[] image  = listItem.getmImage();
@@ -68,19 +71,22 @@ import java.util.List;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
 
-        TextView textHead;
+        TextView textName;
         TextView textDesc;
         ImageView imageView;
         ImageButton cartButton;
+        RatingBar ratingBar;
         ItemClickListener itemClickListener,itemLongClickListener;
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
 
-            textHead = itemView.findViewById(R.id.textViewHead);
+            textName = itemView.findViewById(R.id.name);
             textDesc = itemView.findViewById(R.id.Desc);
             imageView = itemView.findViewById(R.id.img);
             cartButton = itemView.findViewById(R.id.cart_button);
+            ratingBar = itemView.findViewById(R.id.rating);
+            ratingBar.setRating(3.5f);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             cartButton.setOnClickListener(this);
@@ -97,8 +103,6 @@ import java.util.List;
                     this.itemClickListener.cartInsert(v, getLayoutPosition());
                     break;
                 default:
-                    System.out.println("ID============"+v.getId());
-                    System.out.println("ImageID============"+R.id.img);
                     this.itemClickListener.onItemClick(v, getLayoutPosition());
             }
         }

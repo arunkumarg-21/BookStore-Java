@@ -46,13 +46,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolBar"
             android:id="@+id/address"
-            android:hint="@string/address"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginTop="5dp"
-            android:autofillHints="@string/address"
-            android:inputType="textMultiLine"
+            android:inputType="text"
             android:maxLines="1"
             android:ellipsize="end"
             android:textCursorDrawable="@null"
@@ -69,14 +67,15 @@
         <RatingBar
             android:id="@+id/rating"
             android:layout_width="wrap_content"
-            android:layout_below="@+id/textViewHead"
+            android:layout_below="@+id/name"
             android:layout_height="wrap_content"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_alignEnd="@+id/img"
-            android:layout_alignRight="@+id/img" />
+            android:layout_alignRight="@+id/img"
+            android:theme="@style/RatingBar"/>
 
     <TextView
-        android:id="@+id/textViewHead"
+        android:id="@+id/name"
         android:layout_below="@+id/img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -99,12 +98,22 @@
         android:textColor="@android:color/black"
         android:layout_marginStart="20dp" />
 
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/desc"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"/>
+
         <TextView android:layout_width="wrap_content"
             android:id="@+id/qty"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginStart="20dp"
-            android:layout_below="@id/desc"
+            android:layout_below="@id/price"
             android:text="Qty:"
             android:layout_marginLeft="20dp" />
 
@@ -112,7 +121,7 @@
             android:id="@+id/quantity"
             android:layout_width="120dp"
             android:layout_height="20dp"
-            android:layout_below="@+id/desc"
+            android:layout_below="@+id/price"
             android:layout_toRightOf="@+id/qty"
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp"
@@ -123,8 +132,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/desc"
-        android:layout_marginTop="50dp"
+        android:layout_below="@+id/qty"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginEnd="20dp"
@@ -134,20 +143,21 @@
 
         <Button
             android:id="@+id/btCart"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp"
             android:drawableStart="@drawable/ic_shopping_cart"
             android:drawableTint="#EC7063"
             android:textStyle="bold"
+            android:gravity="center"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/mCart"
             android:textColor="@color/colorPrimaryDark"
-            android:layout_marginLeft="5dp"
-            android:drawableLeft="@drawable/ic_shopping_cart" />
+            android:layout_marginLeft="5dp" />
 
 
+<!--
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
@@ -157,18 +167,8 @@
             android:layout_marginLeft="15dp"
             android:contentDescription="@string/mBook">
         </ImageView>
+-->
 
-        <Button
-            android:id="@+id/btBorrow"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="-13dp"
-            android:textStyle="bold"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="@string/mBorrow"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_marginLeft="-13dp" />
     </LinearLayout>
     </RelativeLayout>
     </ScrollView>

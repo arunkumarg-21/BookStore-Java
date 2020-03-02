@@ -1,4 +1,4 @@
-package com.example.bookstore.activity
+package com.example.bookstore.adapter
 
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -11,12 +11,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookstore.model.ListItem
 import com.example.bookstore.R
+import com.example.bookstore.model.UserList
 
 class CartAdapter(listItems: List<ListItem>?, context: Context, itemClickListen: ItemClickListen) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     private var listItems: List<ListItem>? = listItems
     private var context: Context? = context
     private var itemClickListen: ItemClickListen? = itemClickListen
+
 
     interface ItemClickListen {
         fun onItemClick(v: View?, pos: Int)

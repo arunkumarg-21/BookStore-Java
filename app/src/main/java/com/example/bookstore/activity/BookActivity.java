@@ -1,6 +1,5 @@
-package com.example.bookstore;
+package com.example.bookstore.activity;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,55 +13,79 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import java.security.Permission;
+import com.example.bookstore.R;
+import com.example.bookstore.model.ListItem;
+import com.example.bookstore.util.DatabaseHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final int REQ_CODE=1;
+
+    private static final int REQ_CODE = 1;
     ImageView img;
-    TextView txt, txt1;
-    Button btCart, btBorrow;
-    byte[] imge;
+    DatabaseHelper myDb;
+    Spinner spinner;
+    TextView name, desc, price;
+    Button buttonCart;
+    byte[] byteImage;
     EditText address;
     Toolbar toolbar;
+    int Price;
+    String Head, Desc;
+    String addr = "select your address";
+    RatingBar ratingBar;
+
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
 
+        initializeView();
+        toolbarInitialize();
+        gettingPassedData();
+        setAddress();
+        addressClickListener();
+        spinnerInitialize();
+        cartButtonClickListener();
+
+        ratingBar.setRating(3.5f);
+    }
+
+    private void initializeView() {
 
         img = findViewById(R.id.img);
-        txt = findViewById(R.id.textViewHead);
-        txt1 = findViewById(R.id.desc);
-        btCart = findViewById(R.id.btCart);
-        btBorrow = findViewById(R.id.btBorrow);
+        name = findViewById(R.id.name);
+        desc = findViewById(R.id.desc);
+        buttonCart = findViewById(R.id.btCart);
         address = findViewById(R.id.address);
         toolbar = findViewById(R.id.toolBar);
+        ratingBar = findViewById(R.id.rating);
+        price = findViewById(R.id.price);
+        spinner = findViewById(R.id.quantity);
+        myDb = new DatabaseHelper(this);
+    }
 
-
+    private void toolbarInitialize() {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,18 +93,36 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 finish();
             }
         });
+    }
 
+    private void gettingPassedData() {
 
         Intent intent = getIntent();
-        final String Head = intent.getStringExtra("head");
-        txt.setText(Head);
-        String Desc = intent.getStringExtra("desc");
-        txt1.setText(Desc);
-        imge = intent.getByteArrayExtra("image");
-        if(imge!=null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(imge, 0, imge.length);
+        Head = intent.getStringExtra("head");
+        name.setText(Head);
+        Desc = intent.getStringExtra("desc");
+        desc.setText(Desc);
+        Price = intent.getIntExtra("price", 0);
+        price.setText("Price:" + Price);
+        byteImage = intent.getByteArrayExtra("image");
+        if (byteImage != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length);
             img.setImageBitmap(bitmap);
         }
+    }
+
+    private void setAddress() {
+
+        String location = myDb.getAddress();
+        System.out.println("location======" + location);
+        if (location == null) {
+            address.setHint(addr);
+        } else {
+            address.setText(location);
+        }
+    }
+
+    private void addressClickListener() {
 
         address.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,9 +133,9 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                     if (ActivityCompat.shouldShowRequestPermissionRationale(BookActivity.this,
                             Manifest.permission.ACCESS_FINE_LOCATION)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(BookActivity.this);
-                               builder.setTitle("Permission Required")
+                        builder.setTitle("Permission Required")
                                 .setMessage("Location Permission is needed")
-                                .setNegativeButton("Cancel",null)
+                                .setNegativeButton("Cancel", null)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -107,59 +148,63 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     }
                 } else {
-                    startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                    Intent in = new Intent(getApplicationContext(), MapActivity.class);
+                    in.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(in);
                 }
-
-            }
-        });
-
-
-        List<Integer> ai = new ArrayList<>();
-
-       for(int i=1;i<=10;i++){
-           ai.add(i);
-       }
-
-        Spinner spinner = findViewById(R.id.quantity);
-        spinner.setOnItemSelectedListener(this);
-
-        ArrayAdapter<Integer> aa = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, ai);
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(aa);
-
-
-
-        btCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (btCart.getText().equals("Go to cart")) {
-                    Intent intent1 = new Intent(getApplicationContext(), BuyActivity.class);
-                    intent1.putExtra("name", Head);
-                    intent1.putExtra("img", imge);
-                    startActivity(intent1);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Successfully Added to Cart", Toast.LENGTH_SHORT).show();
-                    btCart.setText("Go to cart");
-                }
-            }
-        });
-
-        btBorrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), BorrowActivity.class);
-                i.putExtra("name", Head);
-                i.putExtra("img", imge);
-                startActivity(i);
 
             }
         });
     }
 
-    public void onItemSelected(AdapterView<?> parent, View args1, int position, long id) {
-        String pos = parent.getItemAtPosition(position).toString();
-        //Toast.makeText(getApplicationContext(),null , Toast.LENGTH_SHORT).show();
+    private void spinnerInitialize() {
 
+        List<Integer> ai = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            ai.add(i);
+        }
+        spinner.setOnItemSelectedListener(this);
+        ArrayAdapter<Integer> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, ai);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(aa);
+    }
+
+    private void cartButtonClickListener() {
+
+        buttonCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (buttonCart.getText().equals("Go to cart")) {
+                    startActivity(new Intent(BookActivity.this, CartActivity.class));
+                } else {
+                    ListItem listItem = new ListItem(Head, Desc, byteImage, Price);
+                    boolean result = myDb.insertCart(listItem);
+                    if (result) {
+                        Toast.makeText(BookActivity.this, "Added successful", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(BookActivity.this, "Added failed", Toast.LENGTH_SHORT).show();
+                    }
+                    buttonCart.setText("Go to cart");
+                }
+            }
+        });
+    }
+
+
+    public void onResume() {
+        super.onResume();
+        String location = myDb.getAddress();
+        if (location == null) {
+            address.setHint(addr);
+        } else {
+            address.setText(location);
+        }
+
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View args1, int position, long id) {
+        int pos = Integer.parseInt(parent.getItemAtPosition(position).toString());
+        Price = Price * pos;
     }
 
     public void onNothingSelected(AdapterView<?> arg0) {
@@ -179,6 +224,5 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
     }
-
 
 }

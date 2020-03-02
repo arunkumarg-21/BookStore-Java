@@ -1,4 +1,4 @@
-package com.example.bookstore;
+package com.example.bookstore.activity;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,12 +7,11 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
+import com.example.bookstore.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -48,7 +47,7 @@ public class FCMActivity extends FirebaseMessagingService {
     }
 
     private void sendMyNotification(String body) {
-        Intent intent = new Intent(FCMActivity.this,MainActivity.class);
+        Intent intent = new Intent(FCMActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("message",body);
         PendingIntent pendingIntent = PendingIntent.getActivity(FCMActivity.this,0,intent,PendingIntent.FLAG_ONE_SHOT);

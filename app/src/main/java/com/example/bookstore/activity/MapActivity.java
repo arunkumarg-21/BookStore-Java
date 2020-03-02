@@ -1,4 +1,4 @@
-package com.example.bookstore;
+package com.example.bookstore.activity;
 
 import android.content.Intent;
 import android.content.IntentSender;
@@ -7,7 +7,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
-import com.google.android.gms.common.api.ApiException;
+import com.example.bookstore.R;
+import com.example.bookstore.util.DatabaseHelper;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -27,57 +28,38 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentActivity;
 
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+
+import static java.lang.String.valueOf;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
     private FusedLocationProviderClient mFusedLocation;
-   // private PlacesClient placesClient;
-   // private List<AutocompletePrediction> predictionsList;
-
     private Location mLastKnownLocation;
     private LocationCallback locationCallback;
+    String address;
+    DatabaseHelper myDb;
 
     private View mapView;
     private Button confirm;
     private TextView mAddress;
+    Toolbar toolbar;
 
 
 
@@ -90,6 +72,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         confirm = findViewById(R.id.confirm);
         mAddress = findViewById(R.id.address);
+        toolbar = findViewById(R.id.toolbar);
+        myDb = new DatabaseHelper(this);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDb.setAddress(address.trim());
+               finish();
+            }
+        });
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
@@ -125,7 +128,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            layoutParams.setMargins(0, 0, 40, 180);
+            layoutParams.setMargins(0, 0, 55, 210);
         }
 
         //check if gps enabled if not request user to enable it
@@ -169,7 +172,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 LatLng myCoordinates = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, DEFAULT_ZOOM));
-                String address = getCityName(myCoordinates);
+                address = getCityName(myCoordinates);
                 mAddress.setText(address);
                 return false;
 
@@ -198,7 +201,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             if (mLastKnownLocation != null) {
                                 LatLng myCoordinates = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, DEFAULT_ZOOM));
-                                String address = getCityName(myCoordinates);
+                                address = getCityName(myCoordinates);
                                 mAddress.setText(address);
 
                             } else {
@@ -216,7 +219,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         mLastKnownLocation = locationResult.getLastLocation();
                                         LatLng myCoordinates = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, DEFAULT_ZOOM));
-                                        String address = getCityName(myCoordinates);
+                                        address = getCityName(myCoordinates);
                                         mAddress.setText(address);
                                         mFusedLocation.removeLocationUpdates(locationCallback);
 
