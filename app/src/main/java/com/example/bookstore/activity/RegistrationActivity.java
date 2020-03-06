@@ -5,7 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Patterns;
+import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +23,8 @@ import android.widget.Toast;
 import com.example.bookstore.R;
 import com.example.bookstore.model.UserList;
 import com.example.bookstore.util.DatabaseHelper;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -41,37 +51,77 @@ public class RegistrationActivity extends AppCompatActivity {
         userPass = findViewById(R.id.pass);
         userEmail = findViewById(R.id.userEmail);
         myDb = new DatabaseHelper(this);
+
+        userEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextUtils.isEmpty(userEmail.getText().toString()) && Patterns.EMAIL_ADDRESS.matcher(userEmail.getText().toString()).matches()) {
+                    userEmail.setError(null);
+                } else {
+                    userEmail.setError("Invalid Email");
+                }
+            }
+        });
     }
 
     private void regButtonClickListener() {
         regButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (userName.getText().toString().isEmpty() || userPass.getText().toString().isEmpty()) {
-                    Toast.makeText(RegistrationActivity.this, "please enter all the details", Toast.LENGTH_SHORT).show();
-                } else {
-                    System.out.println("else====");
-                    UserList userList = new UserList(userName.getText().toString(), userEmail.getText().toString(), userPass.getText().toString(),"aminjikarai");
-                    System.out.println("user=======");
-                    boolean task = myDb.insertUser(userList);
-                    if (task) {
-                        System.out.println("register========");
-                        SharedPreferences sh = getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sh.edit();
+                if (!(userName.getText().toString().isEmpty() || userPass.getText().toString().isEmpty())) {
+                    if (isValidEmail()) {
+                        UserList userList = new UserList(userName.getText().toString(), userEmail.getText().toString(), userPass.getText().toString(), "aminjikarai", drawableToByte(getResources().getDrawable(R.drawable.profile_pic)));
+                        boolean task = myDb.insertUser(userList);
+                        if (task) {
+                            SharedPreferences sh = getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sh.edit();
 
-                        editor.putString("id", userName.getText().toString());
-                        editor.putString("password",userPass.getText().toString());
-                        editor.apply();
-                        Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
+                            editor.putString("id", userName.getText().toString());
+                            editor.putString("password", userPass.getText().toString());
+                            editor.apply();
+                            Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
+                        } else {
+                            Toast.makeText(RegistrationActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(RegistrationActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Not a Valid Email", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(RegistrationActivity.this, "please enter all the details", Toast.LENGTH_SHORT).show();
                 }
             }
 
 
         });
+    }
+
+    private byte[] drawableToByte(Drawable book) {
+        Bitmap bitmap = ((BitmapDrawable) book).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        long size = bitmap.getByteCount();
+        if (size > 20000) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream);
+        } else {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        }
+        return stream.toByteArray();
+    }
+
+    public boolean isValidEmail() {
+        CharSequence target = userEmail.getText().toString();
+
+        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     private void userLoginClickListener() {

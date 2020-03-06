@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (Id Integer Primary Key AutoIncrement,Name TEXT,Description TEXT,Image BLOB,Price Integer)");
         db.execSQL("CREATE TABLE " + CART_TABLE + " (Id Integer Primary Key AutoIncrement,Name TEXT,Description TEXT,Image BLOB,Price Integer)");
-        db.execSQL("CREATE TABLE " + USER_TABLE + "(Id Integer Primary Key AutoIncrement,Name Text,Email Text,Password Text,Address Text)");
+        db.execSQL("CREATE TABLE " + USER_TABLE + "(Id Integer Primary Key AutoIncrement,Name Text,Email Text,Password Text,Address Text,Image BLOB)");
 
     }
 
@@ -92,6 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_Email, userList.getUserEmail());
         values.put(COL_Password, userList.getUserPassword());
         values.put(COL_Address, userList.getUserAddress());
+        values.put(COL_Image, userList.getUserImage());
         long result = db.insert(USER_TABLE, null, values);
         if (result == -1) {
             return false;
@@ -157,7 +158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return item;
     }
 
-    public UserList getAllUser() {
+/*    public UserList getAllUser() {
 
         SQLiteDatabase db = this.getWritableDatabase();
         UserList item=null;
@@ -170,7 +171,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String email = res.getString(2);
                     String password = res.getString(3);
                     String address = res.getString(4);
-                    item = new UserList(name, email,password,address);
+                    byte[] image = res.getBlob(5);
+                    item = new UserList(name, email,password,address,image);
                 } while (res.moveToNext());
             }
         } catch (Exception e) {
@@ -179,7 +181,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             res.close();
         }
         return item;
-    }
+    }*/
 
     public UserList getUser(String Name) {
 
@@ -193,7 +195,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String email = res.getString(2);
                     String pass = res.getString(3);
                     String address = res.getString(4);
-                    item = new UserList(name, email, pass, address);
+                    byte[] image = res.getBlob(5);
+                    item = new UserList(name, email, pass, address, image);
                 } while (res.moveToNext());
             }
         } catch (Exception e) {
@@ -204,14 +207,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return item;
     }
 
-    public boolean updateUser(String tName, String name, String email, String address) {
+    public boolean updateUser(int id, String name, String email, String address, String pass) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_Name, name);
+        System.out.println("newname====="+name);
         values.put(COL_Email, email);
         values.put(COL_Address, address);
-        long result = db.update(USER_TABLE, values, "Name =?", new String[]{tName});
+        values.put(COL_Password, pass);
+        long result = db.update(USER_TABLE, values, " Id = " + id, null);
         if (result == -1) {
             return false;
         }
@@ -282,6 +287,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             result.close();
             return null;
         }
+    }
+
+    public int getUsId(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        int id;
+        Cursor result = db.rawQuery(" SELECT Id FROM " + USER_TABLE + " WHERE Name=? ", new String[]{name});
+        if (result.moveToFirst()) {
+            id = result.getInt(0);
+            result.close();
+            return id;
+        } else {
+            result.close();
+            return 0;
+        }
+
+    }
+
+    public void addImage(byte[] bytes, String name) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COL_Image, bytes);
+        db.update(USER_TABLE, values, "Name=?", new String[]{name});
     }
 }
 

@@ -79,6 +79,10 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
                 .setPositiveButton("yes"){ dialog, _ ->
                     dialog.dismiss()
                     myDb.deleteCart(name)
+                    listItems = myDb.getCart()
+                    if(listItems.isNotEmpty()){
+                        recycler.adapter = CartAdapter(listItems, this, this)
+                    }
                 }
         builder.show()
     }

@@ -1,5 +1,6 @@
 package com.example.bookstore.activity;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -53,6 +54,18 @@ public class FCMActivity extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(FCMActivity.this,0,intent,PendingIntent.FLAG_ONE_SHOT);
 
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            //@SuppressLint("WrongConstant")
+            NotificationChannel notificationChannel=new NotificationChannel("BookStore_notification","book_channel",NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription("description");
+            notificationChannel.setName("Channel Name");
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null) {
+                manager.createNotificationChannel(notificationChannel);
+            }
+        }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"channel");
         builder.setContentTitle("BookStore")
                 .setContentText("New Message")

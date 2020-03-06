@@ -201,9 +201,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(i);
                 break;
 
-            case R.id.nav_book:
+           /* case R.id.nav_book:
                 drawerLayout.closeDrawer(GravityCompat.START);
-                break;
+                break;*/
 
             case R.id.nav_logout:
                 drawerLayout.closeDrawer(GravityCompat.START);
