@@ -4,7 +4,7 @@ public class ListItem {
     private String mHead;
     private String mDesc;
     private byte[] mImage;
-    private int Price;
+    private double Price;
 
     /*public ListItem(String mHead, String mDesc, byte[] mImage) {
         this.mHead = mHead;
@@ -12,7 +12,7 @@ public class ListItem {
         this.mImage = mImage;
     }*/
 
-    public ListItem(String mHead,String mDesc, byte[] mImage,int Price){
+    public ListItem(String mHead,String mDesc, byte[] mImage,double Price){
         this.mHead = mHead;
         this.mDesc = mDesc;
         this.mImage = mImage;
@@ -32,7 +32,7 @@ public class ListItem {
         return mHead;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return Price;
     }
 

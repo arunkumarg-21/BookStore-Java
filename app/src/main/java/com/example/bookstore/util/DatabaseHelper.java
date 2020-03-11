@@ -85,7 +85,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean insertUser(UserList userList) {
-        System.out.println("insert=====");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_Name, userList.getUserName());

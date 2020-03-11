@@ -49,7 +49,6 @@ class CartAdapter(listItems: List<ListItem>?, context: Context, itemClickListen:
 
 
         override fun onClick(v: View?) {
-            println("onclick========")
             if(v?.id == R.id.product_remove) {
                 this.itemClickListen?.delete(v, layoutPosition)
             }

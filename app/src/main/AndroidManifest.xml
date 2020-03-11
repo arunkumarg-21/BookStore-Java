@@ -9,21 +9,17 @@
     -->
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.MEDIA_CONTENT_CONTROL"
-        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+
 
     <application
         android:name="androidx.multidex.MultiDexApplication"
@@ -89,7 +85,10 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" /> <!-- Activities Starts Here -->
+            android:value="@string/google_maps_key" />
+
+        <!-- Activities Starts Here -->
+
         <activity android:name=".activity.SplashActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -110,6 +109,7 @@
             android:name=".activity.MapActivity"
             android:label="@string/title_activity_map" /> <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> -->
         <activity android:name=".activity.CartActivity" />
+        <activity android:name=".activity.ProcessPaytm" />
         <activity
             android:name=".activity.BuyActivity"
             android:parentActivityName=".activity.MainActivity" />

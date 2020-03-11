@@ -1,57 +1,54 @@
 package com.example.bookstore.activity
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-import com.example.bookstore.util.DatabaseHelper
-import com.example.bookstore.model.ListItem
 import com.example.bookstore.R
 import com.example.bookstore.adapter.CartAdapter
+import com.example.bookstore.model.ListItem
+import com.example.bookstore.util.DatabaseHelper
+import kotlinx.android.synthetic.main.activity_cart.*
 
 
 class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
 
-    lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private lateinit var recycler: RecyclerView
     private lateinit var listItems:List<ListItem>
     lateinit var myDb: DatabaseHelper
-    private lateinit var netAmount:TextView
-    private lateinit var placeOreder: Button
+    private lateinit var amount:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
 
-        initializeView()
+        myDb = DatabaseHelper(this)
         toolbarInitialize()
         recyclerViewInit()
+        amount = myDb.price
+        net_amount.text = "Total:" + amount
 
-        netAmount.setText("Total: "+myDb.getPrice())
+        place_order.setOnClickListener {
+            val i = Intent(this@CartActivity,ProcessPaytm::class.java)
+            i.putExtra("total",amount)
+            startActivity(i)
 
+        }
     }
 
 
-    private fun initializeView() {
-        toolbar = findViewById(R.id.toolBar)
-        netAmount= findViewById(R.id.net_amount)
-        placeOreder = findViewById(R.id.place_order)
-        myDb = DatabaseHelper(this)
-    }
 
     private fun toolbarInitialize() {
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        toolbar.setNavigationOnClickListener{finish()}
+        toolBar.setNavigationOnClickListener{finish()}
     }
 
     private fun recyclerViewInit() {
@@ -66,7 +63,20 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
     }
 
     override fun onItemClick(v: View?, pos: Int) {
-       finish()
+        val listItem = listItems[pos]
+        val head = listItem.head
+        val desc = listItem.desc
+        val image = listItem.getmImage()
+        val price = listItem.price
+
+
+        val intent = Intent(this@CartActivity, BookActivity::class.java)
+        intent.putExtra("head", head)
+        intent.putExtra("desc", desc)
+        intent.putExtra("image", image)
+        intent.putExtra("price", price)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 
     override fun delete(v: View?, pos: Int) {
@@ -79,6 +89,8 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
                 .setPositiveButton("yes"){ dialog, _ ->
                     dialog.dismiss()
                     myDb.deleteCart(name)
+                    amount = myDb.price
+                    net_amount.text = "Total: " + amount
                     listItems = myDb.getCart()
                     if(listItems.isNotEmpty()){
                         recycler.adapter = CartAdapter(listItems, this, this)

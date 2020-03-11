@@ -15,16 +15,12 @@ import androidx.appcompat.widget.Toolbar
 import com.example.bookstore.R
 import com.example.bookstore.model.UserList
 import com.example.bookstore.util.DatabaseHelper
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 class EditProfile : AppCompatActivity() {
 
-    private lateinit var saveButton: Button
-    private lateinit var editName: TextView
-    private lateinit var editEmail: TextView
-    private lateinit var editAddress: TextView
-    private lateinit var editPassword: TextView
+
     private lateinit var myDb: DatabaseHelper
-    private lateinit var toolbar: Toolbar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,12 +28,6 @@ class EditProfile : AppCompatActivity() {
         setContentView(R.layout.activity_edit_profile)
 
         myDb = DatabaseHelper(this)
-        toolbar = findViewById(R.id.toolBar)
-        editName = findViewById(R.id.edit_name)
-        editEmail = findViewById(R.id.edit_email)
-        editAddress = findViewById(R.id.edit_address)
-        editPassword = findViewById(R.id.edit_password)
-        saveButton = findViewById(R.id.save)
 
         toolbarInitialize()
         inputListener()
@@ -49,56 +39,57 @@ class EditProfile : AppCompatActivity() {
         val password:String? = i.getStringExtra("password")
         val id:Int = i.getIntExtra("id",0)
 
-        editName.text = name
-        editEmail.text = email
-        editAddress.text = address
-        editPassword.text = password
-        saveButton.setOnClickListener(View.OnClickListener {
-            if (editName.text.toString().isNotEmpty() && editEmail.text.toString().isNotEmpty()) {
-                val result: Boolean = myDb.updateUser(id,editName.text.toString(), editEmail.text.toString(), editAddress.text.toString(),editPassword.text.toString())
+        edit_name.setText(name)
+        edit_email.setText(email)
+        edit_address.setText(address)
+        edit_password.setText(password)
+        save.setOnClickListener {
+            if (edit_name.text.toString().isNotEmpty() && edit_email.text.toString().isNotEmpty()) {
+                val result: Boolean = myDb.updateUser(id,edit_name.text.toString(), edit_email.text.toString(), edit_address.text.toString(),edit_password.text.toString())
                 if (result) {
                     val sp = getSharedPreferences("LoginActivity", Context.MODE_PRIVATE)
                     val editor: SharedPreferences.Editor = sp.edit()
-                    editor.putString("id",editName.text.toString())
+                    editor.putString("id",edit_name.text.toString())
                     editor.apply()
                     Toast.makeText(this@EditProfile, "updated successful", Toast.LENGTH_SHORT).show()
-                    //var userList: UserList = myDb.getAllUser()
+                    val i = Intent(this@EditProfile,ProfileActivity::class.java)
+                    i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    startActivity(i)
                 }
             }
-        })
-
+        }
     }
 
     private fun toolbarInitialize() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        toolbar.setNavigationOnClickListener{finish()}
+        toolBar.setNavigationOnClickListener{finish()}
 
     }
 
     private fun inputListener() {
-        editName.addTextChangedListener(object : TextWatcher {
+        edit_name.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                if (editName.text.toString().isEmpty()) {
-                    editName.error = "Cannot Be Null"
+                if (edit_name.text.toString().isEmpty()) {
+                    edit_name.error = "Cannot Be Null"
                 } else {
-                    editName.error = null
+                    edit_name.error = null
 
                 }
             }
         })
-        editEmail.addTextChangedListener(object : TextWatcher {
+        edit_email.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                if (editEmail.text.toString().isEmpty()) {
-                    editEmail.error = "Cannot Be Null"
+                if (edit_email.text.toString().isEmpty()) {
+                    edit_email.error = "Cannot Be Null"
                 } else {
-                    editEmail.error = null
+                    edit_email.error = null
                 }
             }
         })

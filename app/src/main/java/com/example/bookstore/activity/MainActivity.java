@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String head = listItem.getHead();
         String desc = listItem.getDesc();
         byte[] image = listItem.getmImage();
-        int price = listItem.getPrice();
+        double price = listItem.getPrice();
 
 
         Intent intent = new Intent(MainActivity.this, BookActivity.class);

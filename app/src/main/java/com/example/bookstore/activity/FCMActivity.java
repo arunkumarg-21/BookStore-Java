@@ -64,23 +64,24 @@ public class FCMActivity extends FirebaseMessagingService {
             if (manager != null) {
                 manager.createNotificationChannel(notificationChannel);
             }
-        }
+        }else {
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"channel");
-        builder.setContentTitle("BookStore")
-                .setContentText("New Message")
-                .setSmallIcon(R.drawable.notification_icon)
-                .setTicker("Ticker")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                .bigText("New Message From BookStore Recieved"))
-                .setContentIntent(pendingIntent)
-                .setSound(soundUri)
-                .setAutoCancel(true);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channel");
+            builder.setContentTitle("BookStore")
+                    .setContentText("New Message")
+                    .setSmallIcon(R.drawable.notification_icon)
+                    .setTicker("Ticker")
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText("New Message From BookStore Recieved"))
+                    .setContentIntent(pendingIntent)
+                    .setSound(soundUri)
+                    .setAutoCancel(true);
 
 
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (manager != null) {
-            manager.notify(1, builder.build());
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null) {
+                manager.notify(1, builder.build());
+            }
         }
 
     }

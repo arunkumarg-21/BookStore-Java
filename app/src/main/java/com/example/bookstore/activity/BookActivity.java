@@ -49,7 +49,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     byte[] byteImage;
     EditText address;
     Toolbar toolbar;
-    int Price;
+    Double Price;
     String Head, Desc;
     String addr = "select your address";
     RatingBar ratingBar;
@@ -81,7 +81,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.nav_cart:
+            case R.id.mCart:
                 startActivity(new Intent(BookActivity.this,CartActivity.class));
                 break;
         }
@@ -123,7 +123,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         name.setText(Head);
         Desc = intent.getStringExtra("desc");
         desc.setText(Desc);
-        Price = intent.getIntExtra("price", 0);
+        Price = intent.getDoubleExtra("price",0);
         price.setText("Price:" + Price);
         byteImage = intent.getByteArrayExtra("image");
         if (byteImage != null) {
@@ -135,7 +135,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     private void setAddress() {
 
         String location = myDb.getAddress();
-        System.out.println("location======" + location);
         if (location == null) {
             address.setHint(addr);
         } else {

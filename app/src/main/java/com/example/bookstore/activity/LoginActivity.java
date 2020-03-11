@@ -26,12 +26,16 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONObject;
 
@@ -41,7 +45,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     TextView newUserRegister;
     EditText userId, userPassword;
     Button loginButton;
-    // GoogleSignInClient mGoogleSignInClient;
+    GoogleSignInClient mGoogleSignInClient;
     private GoogleApiClient googleApiClient;
     private LoginButton mLoginBt;
     CallbackManager callbackManager;
@@ -102,17 +106,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-        // mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        googleApiClient = new GoogleApiClient.Builder(this)
+         mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
+       /* googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+                .build();*/
         // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         // updateUI(account);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                /*Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                startActivityForResult(signInIntent, REQ_CODE);*/
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, REQ_CODE);
             }
         });
@@ -212,13 +218,33 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         if (requestCode == REQ_CODE) {
 
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+            /*GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);*/
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+
 
         }
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
+    private void handleSignInResult(Task<GoogleSignInAccount> result) {
+       try{
+           GoogleSignInAccount account = result.getResult(ApiException.class);
+           //updateUI(account);
+           startActivity(new Intent(LoginActivity.this,MainActivity.class));
+       }catch (Exception e){
+           Toast.makeText(getApplicationContext(), "Signing in Failed", Toast.LENGTH_SHORT).show();
+       }
+
+    }
+
+   /* @Override
+    protected void onStart() {
+
+        super.onStart();
+    }*/
+
+    /*private void handleSignInResult(GoogleSignInResult result) {
         System.out.println("result===="+result.getStatus());
         if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
@@ -229,7 +255,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Toast.makeText(getApplicationContext(), "Signin Failed", Toast.LENGTH_SHORT).show();
         }
 
-    }
+    }*/
+
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
