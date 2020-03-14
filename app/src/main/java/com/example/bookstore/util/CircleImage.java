@@ -1,4 +1,4 @@
-package com.example.bookstore.activity;
+package com.example.bookstore.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;

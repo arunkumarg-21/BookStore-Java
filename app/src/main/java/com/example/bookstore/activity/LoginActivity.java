@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,10 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookstore.R;
+import com.example.bookstore.model.UserList;
 import com.example.bookstore.util.DatabaseHelper;
+import com.example.bookstore.util.SharedPreferenceHelper;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
@@ -37,16 +43,20 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.Objects;
+
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
     TextView newUserRegister;
     EditText userId, userPassword;
     Button loginButton;
     GoogleSignInClient mGoogleSignInClient;
-    private GoogleApiClient googleApiClient;
     private LoginButton mLoginBt;
     CallbackManager callbackManager;
     private SignInButton signInButton;
@@ -62,22 +72,26 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         facebookLogin();
         googleLogin();
         inputListener();
-        loginButtonClickListener();
-        newUserRegisterClickListener();
+
     }
 
 
     private void initializeView() {
         newUserRegister = findViewById(R.id.signUp);
+        newUserRegister.setOnClickListener(this);
         loginButton = findViewById(R.id.login);
+        loginButton.setOnClickListener(this);
         userId = findViewById(R.id.userId);
         userPassword = findViewById(R.id.pass);
         mLoginBt = findViewById(R.id.facebookLogin);
         signInButton = findViewById(R.id.signIn);
+        signInButton.setOnClickListener(this);
         myDb = new DatabaseHelper(this);
+
     }
 
     private void facebookLogin() {
+        //FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         mLoginBt.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -85,6 +99,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
+                        try {
+                            System.out.println("name=======+"+response.getJSONObject().getString("email"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         Toast.makeText(LoginActivity.this, "Welcome " + object.optString("name"), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -106,22 +125,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-         mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
-       /* googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();*/
-        // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        // updateUI(account);
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(signInIntent, REQ_CODE);*/
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, REQ_CODE);
-            }
-        });
+        mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
     }
 
     private void inputListener() {
@@ -163,52 +167,34 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
+    @Override
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.signIn:
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, REQ_CODE);
+                break;
 
-    private void loginButtonClickListener() {
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            case R.id.login:
                 boolean task = myDb.checkUser(userId.getText().toString(), userPassword.getText().toString());
                 if (task) {
-                    SharedPreferences sh = getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sh.edit();
-
-                    editor.putString("id", userId.getText().toString());
-                    editor.putString("password", userPassword.getText().toString());
-                    editor.apply();
+                    SharedPreferenceHelper sph=new SharedPreferenceHelper();
+                    sph.initialize(getApplicationContext(),userId.getText().toString(),userPassword.getText().toString());
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 } else {
                     Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
                 }
-            }
-        });
-    }
+                break;
 
-    private void newUserRegisterClickListener() {
-        newUserRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+            case R.id.signUp:
                 startActivity(new Intent(getApplicationContext(), RegistrationActivity.class));
-            }
-        });
-    }
+                break;
 
-
-    public void onResume() {
-        super.onResume();
-
-        SharedPreferences sh = getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
-        if (sh.getString("id", null) != null) {
-
-            String pass = sh.getString("password", null);
-            String id = sh.getString("id", null);
-            if (!(id.isEmpty() && pass.isEmpty())) {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            }
         }
-
     }
+
+
+
 
 
     @Override
@@ -217,9 +203,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQ_CODE) {
-
-            /*GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);*/
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
 
@@ -228,35 +211,42 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> result) {
-       try{
-           GoogleSignInAccount account = result.getResult(ApiException.class);
-           //updateUI(account);
-           startActivity(new Intent(LoginActivity.this,MainActivity.class));
-       }catch (Exception e){
-           Toast.makeText(getApplicationContext(), "Signing in Failed", Toast.LENGTH_SHORT).show();
-       }
+        try {
+            GoogleSignInAccount account = result.getResult(ApiException.class);
+            if (account != null) {
+                updateUI(account);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Signing in Failed", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
-   /* @Override
-    protected void onStart() {
+    private void updateUI(GoogleSignInAccount account) {
+        String name = account.getDisplayName();
+        String email = account.getEmail();
+        String pass = account.getId();
+        assert pass != null;
+        assert email != null;
+        UserList userList = new UserList(Objects.requireNonNull(name), email, pass, "aminjikarai", drawableToByte(getResources().getDrawable(R.drawable.profile_pic)));
+        myDb.insertUser(userList);
+        SharedPreferenceHelper sph=new SharedPreferenceHelper();
+        sph.initialize(getApplicationContext(),name,pass);
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
-        super.onStart();
-    }*/
+    }
 
-    /*private void handleSignInResult(GoogleSignInResult result) {
-        System.out.println("result===="+result.getStatus());
-        if (result.isSuccess()) {
-            GoogleSignInAccount account = result.getSignInAccount();
-            String name = account.getDisplayName();
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            Toast.makeText(getApplicationContext(), "Welcome " + name, Toast.LENGTH_SHORT).show();
+    private byte[] drawableToByte(Drawable book) {
+        Bitmap bitmap = ((BitmapDrawable) book).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        long size = bitmap.getByteCount();
+        if (size > 20000) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream);
         } else {
-            Toast.makeText(getApplicationContext(), "Signin Failed", Toast.LENGTH_SHORT).show();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         }
-
-    }*/
-
+        return stream.toByteArray();
+    }
 
 
     @Override

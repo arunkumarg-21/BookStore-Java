@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import com.example.bookstore.R;
 import com.example.bookstore.util.DatabaseHelper;
+import com.example.bookstore.util.SharedPreferenceHelper;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -27,7 +28,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
 
 
 import androidx.annotation.NonNull;
@@ -45,7 +45,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static java.lang.String.valueOf;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -72,7 +71,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         confirm = findViewById(R.id.confirm);
         mAddress = findViewById(R.id.address);
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolBar);
         myDb = new DatabaseHelper(this);
 
         setSupportActionBar(toolbar);
@@ -89,17 +88,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myDb.setAddress(address.trim());
+                SharedPreferenceHelper sph = new SharedPreferenceHelper();
+                String name = sph.getSharedName(getApplicationContext());
+                myDb.setAddress(address.trim(),name);
                finish();
             }
         });
 
 
-        SupportMapFragment mapFragment = (SupportMapFragment)this.getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
         assert mapFragment != null;
-        mapFragment.getMapAsync(this);
         mapView = mapFragment.getView();
-
+        mapFragment.getMapAsync(this);
         mFusedLocation = LocationServices.getFusedLocationProviderClient(MapActivity.this);
         //Places.initialize(MapActivity.this, "AIzaSyDol4I2wHY0wL6B8GhZ4Bzvxc4bvhbZGsw");
         //placesClient = Places.createClient(this);
@@ -188,7 +188,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 getDeviceLocation();
             }
         }
-
     }
 
     private void getDeviceLocation() {

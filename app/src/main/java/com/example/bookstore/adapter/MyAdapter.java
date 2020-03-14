@@ -31,14 +31,12 @@ import java.util.List;
     private List<ListItem> listItems;
     private Context context;
     private ItemClickListener itemClickListener,itemLongClickListener;
-    private DatabaseHelper myDb;
 
     public MyAdapter(List<ListItem> listItems, Context context, ItemClickListener itemClickListener) {
         this.listItems = listItems;
         this.context = context;
         this.itemClickListener = itemClickListener;
         this.itemLongClickListener=itemClickListener;
-        myDb = new DatabaseHelper(context);
     }
 
     @NonNull
@@ -69,7 +67,7 @@ import java.util.List;
         return listItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
 
         TextView textName;
         TextView textDesc;
@@ -83,7 +81,7 @@ import java.util.List;
 
             textName = itemView.findViewById(R.id.name);
             textDesc = itemView.findViewById(R.id.Desc);
-            imageView = itemView.findViewById(R.id.img);
+            imageView = itemView.findViewById(R.id.bookImage);
             cartButton = itemView.findViewById(R.id.cart_button);
             ratingBar = itemView.findViewById(R.id.rating);
             ratingBar.setRating(3.5f);
@@ -96,8 +94,7 @@ import java.util.List;
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.img:
-                    System.out.println("========image=========");
+                case R.id.bookImage:
                     break;
                 case R.id.cart_button:
                     this.itemClickListener.cartInsert(v, getLayoutPosition());

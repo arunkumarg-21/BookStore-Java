@@ -1,4 +1,4 @@
-package com.example.bookstore.activity;
+package com.example.bookstore.api.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

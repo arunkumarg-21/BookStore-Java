@@ -13,14 +13,16 @@ import com.example.bookstore.adapter.CartAdapter
 import com.example.bookstore.model.ListItem
 import com.example.bookstore.util.DatabaseHelper
 import kotlinx.android.synthetic.main.activity_cart.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 
 class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
 
     private lateinit var recycler: RecyclerView
     private lateinit var listItems:List<ListItem>
-    lateinit var myDb: DatabaseHelper
+    private lateinit var myDb: DatabaseHelper
     private lateinit var amount:String
+    private val total = "TOTAL:"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,10 +32,9 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
         toolbarInitialize()
         recyclerViewInit()
         amount = myDb.price
-        net_amount.text = "Total:" + amount
-
+        net_amount.text = total.plus(amount)
         place_order.setOnClickListener {
-            val i = Intent(this@CartActivity,ProcessPaytm::class.java)
+            val i = Intent(this@CartActivity, PayTmActivity::class.java)
             i.putExtra("total",amount)
             startActivity(i)
 
@@ -43,7 +44,6 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
 
 
     private fun toolbarInitialize() {
-
         setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
@@ -90,12 +90,26 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
                     dialog.dismiss()
                     myDb.deleteCart(name)
                     amount = myDb.price
-                    net_amount.text = "Total: " + amount
+                    net_amount.text = total.plus( amount)
                     listItems = myDb.getCart()
                     if(listItems.isNotEmpty()){
                         recycler.adapter = CartAdapter(listItems, this, this)
                     }
                 }
         builder.show()
+    }
+
+    override fun minusPrice(v: View?, pos: Int) {
+        val listItem = listItems[pos]
+        var price:Double = listItem.price
+        price -= amount.toDouble()
+        net_amount.text = total.plus(price)
+    }
+
+    override fun addPrice(v: View?, pos: Int) {
+        val listItem = listItems[pos]
+        var price:Double = listItem.price
+        price += amount.toDouble()
+        net_amount.text = total.plus(price)
     }
 }

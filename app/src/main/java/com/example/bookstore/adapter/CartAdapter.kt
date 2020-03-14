@@ -23,37 +23,43 @@ class CartAdapter(listItems: List<ListItem>?, context: Context, itemClickListen:
     interface ItemClickListen {
         fun onItemClick(v: View?, pos: Int)
         fun delete(v: View?, pos: Int)
+        fun minusPrice(v: View?, pos: Int)
+        fun addPrice(v: View?, pos: Int)
     }
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        /*fun bindItems(item:ListItem) {
 
-           }*/
-        val textName: TextView
-        val textDesc: TextView
-        val image: ImageView
-        val price: TextView
-        val deleteButton: Button
+        val textName: TextView = itemView.findViewById(R.id.product_name)
+        val textDesc: TextView = itemView.findViewById(R.id.product_description)
+        val image: ImageView = itemView.findViewById(R.id.product_image)
+        val price: TextView = itemView.findViewById(R.id.product_price)
+        private val deleteButton: Button = itemView.findViewById(R.id.product_remove)
+        private val laterButton: Button = itemView.findViewById(R.id.product_later)
         var itemClickListen: ItemClickListen? = null
 
         init {
-            textName = itemView.findViewById(R.id.product_name)
-            textDesc = itemView.findViewById(R.id.product_description)
-            image = itemView.findViewById(R.id.product_image)
-            price = itemView.findViewById(R.id.product_price)
-            deleteButton = itemView.findViewById(R.id.product_remove)
             itemView.setOnClickListener(this)
             deleteButton.setOnClickListener(this)
+            laterButton.setOnClickListener(this)
         }
 
 
         override fun onClick(v: View?) {
-            if(v?.id == R.id.product_remove) {
-                this.itemClickListen?.delete(v, layoutPosition)
+            when (v?.id) {
+                R.id.product_remove -> {
+                    this.itemClickListen?.delete(v, layoutPosition)
+                }
+                R.id.product_later -> {
+                    if (laterButton.text == "SAVE FOR LATER" || laterButton.text == "save for later") {
+                        this.itemClickListen?.minusPrice(v, layoutPosition)
+                    } else {
+                        this.itemClickListen?.addPrice(v, layoutPosition)
+                    }
+                }
+                else -> this.itemClickListen?.onItemClick(v, layoutPosition)
             }
-                else this.itemClickListen?.onItemClick(v, layoutPosition)
-            }
+        }
 
         fun setItemClickListener(ic: ItemClickListen?) {
             itemClickListen = ic

@@ -2,9 +2,7 @@ package com.example.bookstore.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,7 +11,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
-import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +20,7 @@ import android.widget.Toast;
 import com.example.bookstore.R;
 import com.example.bookstore.model.UserList;
 import com.example.bookstore.util.DatabaseHelper;
+import com.example.bookstore.util.SharedPreferenceHelper;
 
 import java.io.ByteArrayOutputStream;
 
@@ -83,12 +81,8 @@ public class RegistrationActivity extends AppCompatActivity {
                         UserList userList = new UserList(userName.getText().toString(), userEmail.getText().toString(), userPass.getText().toString(), "aminjikarai", drawableToByte(getResources().getDrawable(R.drawable.profile_pic)));
                         boolean task = myDb.insertUser(userList);
                         if (task) {
-                            SharedPreferences sh = getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sh.edit();
-
-                            editor.putString("id", userName.getText().toString());
-                            editor.putString("password", userPass.getText().toString());
-                            editor.apply();
+                            SharedPreferenceHelper sph=new SharedPreferenceHelper();
+                            sph.initialize(getApplicationContext(),userName.getText().toString(),userPass.getText().toString());
                             Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
                         } else {

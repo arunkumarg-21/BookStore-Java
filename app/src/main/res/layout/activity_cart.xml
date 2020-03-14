@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.CartActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
 
         <TextView
             android:id="@+id/selected_items"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/toolBar"
-            android:text="Selected Items"
+            android:layout_below="@+id/toolbar"
+            android:text="@string/selected_cart_items"
             android:textStyle="bold"
             android:layout_margin="16dp"
-            android:textSize="20dp"/>
+            android:textSize="20sp"/>
 
        <androidx.recyclerview.widget.RecyclerView
            android:id="@+id/recyclerView"
@@ -31,6 +27,7 @@
            android:layout_marginBottom="60dp">
 
        </androidx.recyclerview.widget.RecyclerView>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -42,10 +39,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="net amount"
+            android:text="@string/net_amount"
             android:textStyle="bold"
             android:textColor="@android:color/black"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_marginStart="12dp"
             android:paddingTop="15dp"
             android:gravity="center"/>
@@ -58,7 +55,7 @@
             android:layout_marginEnd="15dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="7dp"
-            android:text="place order"
+            android:text="@string/place_order"
             android:textColor="@android:color/white"
             android:background="@android:color/holo_orange_dark"/>
 

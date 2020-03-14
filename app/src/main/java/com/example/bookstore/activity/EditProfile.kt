@@ -1,20 +1,16 @@
 package com.example.bookstore.activity
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
+import android.util.Patterns
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import com.example.bookstore.R
-import com.example.bookstore.model.UserList
 import com.example.bookstore.util.DatabaseHelper
+import com.example.bookstore.util.SharedPreferenceHelper
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 class EditProfile : AppCompatActivity() {
@@ -45,16 +41,16 @@ class EditProfile : AppCompatActivity() {
         edit_password.setText(password)
         save.setOnClickListener {
             if (edit_name.text.toString().isNotEmpty() && edit_email.text.toString().isNotEmpty()) {
-                val result: Boolean = myDb.updateUser(id,edit_name.text.toString(), edit_email.text.toString(), edit_address.text.toString(),edit_password.text.toString())
-                if (result) {
-                    val sp = getSharedPreferences("LoginActivity", Context.MODE_PRIVATE)
-                    val editor: SharedPreferences.Editor = sp.edit()
-                    editor.putString("id",edit_name.text.toString())
-                    editor.apply()
-                    Toast.makeText(this@EditProfile, "updated successful", Toast.LENGTH_SHORT).show()
-                    val i = Intent(this@EditProfile,ProfileActivity::class.java)
-                    i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    startActivity(i)
+                if (validEmail()) {
+                    val result: Boolean = myDb.updateUser(id, edit_name.text.toString(), edit_email.text.toString(), edit_address.text.toString(), edit_password.text.toString())
+                    if (result) {
+                        val sp = SharedPreferenceHelper()
+                        sp.initialize(applicationContext,edit_name.text.toString(),edit_password.text.toString())
+                        Toast.makeText(this@EditProfile, "updated successful", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@EditProfile, ProfileActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                    }
                 }
             }
         }
@@ -84,14 +80,27 @@ class EditProfile : AppCompatActivity() {
         })
         edit_email.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+
+            }
             override fun afterTextChanged(s: Editable) {
                 if (edit_email.text.toString().isEmpty()) {
                     edit_email.error = "Cannot Be Null"
                 } else {
-                    edit_email.error = null
+                    if (!TextUtils.isEmpty(edit_email.text.toString()) && Patterns.EMAIL_ADDRESS.matcher(edit_email.text.toString()).matches()) {
+                        edit_email.error = null
+                    } else {
+                        edit_email.error = "Invalid Email"
+                    }
                 }
+
             }
         })
     }
+
+    private fun validEmail(): Boolean {
+        val target: CharSequence = edit_email.text.toString()
+        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()
+    }
+
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorWhite"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/colorWhite">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -13,8 +13,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="8dp"
         android:background="?android:attr/selectableItemBackground"
-        app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="@android:color/white">
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,86 +24,75 @@
                 android:id="@+id/product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Product Name"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:textSize="15dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginStart="12dp"/>
+                android:text="@string/product_name"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/product_description"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:maxLines="4"
-                android:ellipsize="end"
                 android:layout_below="@+id/product_name"
                 android:layout_marginStart="12dp"
-                android:text="product description"
-                android:textSize="13dp"/>
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:text="@string/product_description"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/text_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/product_description"
-                android:textSize="18dp"
-                android:text="Price:"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:text="@string/price"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/product_description"
-                android:layout_toRightOf="@+id/text_price"
-                android:textSize="18dp"
+                android:layout_below="@+id/text_price"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
                 android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="10dp"/>
-
-           <!-- <Spinner
-                android:id="@+id/spinner"
-                android:layout_below="@+id/product_price"
-                android:layout_width="80dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="12dp"
-                android:layout_height="40dp"/>-->
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/product_image"
                 android:layout_width="100dp"
                 android:layout_height="90dp"
                 android:layout_alignParentEnd="true"
-                android:layout_margin="16dp"/>
+                android:layout_margin="16dp"
+                android:contentDescription="@string/mBookImage" />
 
             <Button
                 android:id="@+id/product_remove"
                 android:layout_width="170dp"
                 android:layout_height="50dp"
-                android:text="remove"
-                android:drawableLeft="@drawable/ic_delete"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true"
+                android:drawableStart="@drawable/ic_delete"
+                android:text="@string/cart_remove" />
 
             <Button
                 android:id="@+id/product_later"
                 android:layout_width="170dp"
                 android:layout_height="50dp"
                 android:layout_alignParentStart="true"
-                android:text="save for later"
-                android:drawableLeft="@drawable/ic_move_to_box"
-                android:layout_alignParentBottom="true"/>
-
-
+                android:layout_alignParentBottom="true"
+                android:drawableStart="@drawable/ic_move_to_box"
+                android:text="@string/cart_save_for_later" />
 
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 </RelativeLayout>

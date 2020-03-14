@@ -18,18 +18,18 @@ import java.util.List;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "Books";
-    public static final String TABLE_NAME = "BooksTable";
-    public static final String CART_TABLE = "CartTable";
-    public static final String USER_TABLE = "UserTable";
+    private static final String DATABASE_NAME = "Books";
+    private static final String TABLE_NAME = "BooksTable";
+    private static final String CART_TABLE = "CartTable";
+    private static final String USER_TABLE = "UserTable";
     public static final String COL_Id = "Id";
-    public static final String COL_Name = "Name";
-    public static final String COL_Description = "Description";
-    public static final String COL_Image = "Image";
-    public static final String COL_Price = "Price";
-    public static final String COL_Address = "Address";
-    public static final String COL_Email = "Email";
-    public static final String COL_Password = "Password";
+    private static final String COL_Name = "Name";
+    private static final String COL_Description = "Description";
+    private static final String COL_Image = "Image";
+    private static final String COL_Price = "Price";
+    private static final String COL_Address = "Address";
+    private static final String COL_Email = "Email";
+    private static final String COL_Password = "Password";
 
 
     public DatabaseHelper(@Nullable Context context) {
@@ -54,19 +54,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insertBook(ListItem listItem) {
+    public void insertBook(ListItem listItem) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_Name, listItem.getHead());
         values.put(COL_Description, listItem.getDesc());
         values.put(COL_Image, listItem.getmImage());
         values.put(COL_Price, listItem.getPrice());
-        long result = db.insert(TABLE_NAME, null, values);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        db.insert(TABLE_NAME, null, values);
     }
 
     public boolean insertCart(ListItem listItem) {
@@ -77,11 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_Image, listItem.getmImage());
         values.put(COL_Price, listItem.getPrice());
         long result = db.insert(CART_TABLE, null, values);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return result != -1;
     }
 
     public boolean insertUser(UserList userList) {
@@ -93,19 +84,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_Address, userList.getUserAddress());
         values.put(COL_Image, userList.getUserImage());
         long result = db.insert(USER_TABLE, null, values);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return result != -1;
     }
 
     public boolean checkUser(String Name, String Password) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor result = db.rawQuery(" SELECT Name,Password FROM " + USER_TABLE + " WHERE Name=? AND Password=? ", new String[]{Name, Password});
         if (result.moveToFirst()) {
+            result.close();
             return true;
         } else {
+            result.close();
             return false;
         }
     }
@@ -157,31 +146,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return item;
     }
 
-/*    public UserList getAllUser() {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        UserList item=null;
-        Cursor res = db.rawQuery(" SELECT * FROM " + USER_TABLE, null);
-
-        try {
-            if (res.moveToFirst()) {
-                do {
-                    String name = res.getString(1);
-                    String email = res.getString(2);
-                    String password = res.getString(3);
-                    String address = res.getString(4);
-                    byte[] image = res.getBlob(5);
-                    item = new UserList(name, email,password,address,image);
-                } while (res.moveToNext());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            res.close();
-        }
-        return item;
-    }*/
-
     public UserList getUser(String Name) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -211,18 +175,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_Name, name);
-        System.out.println("newname====="+name);
         values.put(COL_Email, email);
         values.put(COL_Address, address);
         values.put(COL_Password, pass);
         long result = db.update(USER_TABLE, values, " Id = " + id, null);
-        if (result == -1) {
-            return false;
-        }
-        return true;
+        return result != -1;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void delete(String name) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NAME, " Name=? ", new String[]{name});
@@ -255,20 +214,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         result.moveToFirst();
         int count = result.getInt(0);
         result.close();
-        if (count <= 0) {
-            return true;
-
-        } else {
-            return false;
-        }
-
+        return count <= 0;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(String address,String name) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_Address, address);
-        db.insert(USER_TABLE, null, values);
+        db.update(USER_TABLE, values," Name=? ",new String[]{name});
 
     }
 

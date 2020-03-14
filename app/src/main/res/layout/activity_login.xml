@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bgimage"
-    tools:context=".MainActivity">-->
-
-
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -27,7 +18,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/welcome"
                 android:textColor="@color/colorWhite"
@@ -41,7 +31,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvDesc"
                 android:layout_alignStart="@id/tvDesc"
-                android:layout_alignLeft="@+id/tvDesc"
                 android:text="@string/login"
                 android:textColor="@color/colorWhite"
                 android:textSize="23sp"
@@ -63,7 +52,6 @@
                 android:layout_height="180dp"
                 android:layout_centerInParent="true"
                 android:layout_marginStart="100dp"
-                android:layout_marginLeft="100dp"
                 android:elevation="3dp"
                 app:cardBackgroundColor="@color/colorWhite"
                 app:cardCornerRadius="15dp">
@@ -83,9 +71,8 @@
                         android:autofillHints="UserName"
                         android:backgroundTint="#212F3D"
                         android:drawableStart="@drawable/ic_account_circle_black_24dp"
-                        android:drawableLeft="@drawable/ic_account_circle_black_24dp"
                         android:drawableTint="@color/colorPrimaryDark"
-                        android:hint="UserId"
+                        android:hint="@string/hint_name"
                         android:inputType="text"
                         android:textColor="#212F3D"
                         android:textCursorDrawable="@null"
@@ -98,9 +85,8 @@
                         android:autofillHints="Password"
                         android:backgroundTint="#212F3D"
                         android:drawableStart="@drawable/ic_vpn_key_black_24dp"
-                        android:drawableLeft="@drawable/ic_vpn_key_black_24dp"
                         android:drawableTint="@color/colorPrimaryDark"
-                        android:hint="Password"
+                        android:hint="@string/password"
                         android:inputType="textPassword"
                         android:textColor="#212F3D"
                         android:textCursorDrawable="@null"
@@ -139,7 +125,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/signUp"
                 android:layout_marginStart="50dp"
-                android:layout_marginLeft="50dp"
                 android:layout_marginBottom="30dp" />
 
             <com.facebook.login.widget.LoginButton
@@ -151,10 +136,7 @@
                 android:textAlignment="center"
                 android:layout_below="@+id/signUp"
                 android:layout_marginStart="60dp"
-                android:layout_marginLeft="60dp"
-                android:layout_toEndOf="@+id/signIn"
-                android:layout_toRightOf="@+id/signIn" />
+                android:layout_toEndOf="@+id/signIn"/>
         </RelativeLayout>
     </ScrollView>
-<!--</RelativeLayout>-->
 

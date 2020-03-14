@@ -1,4 +1,4 @@
-package com.example.bookstore.activity;
+package com.example.bookstore.api.service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.example.bookstore.R;
+import com.example.bookstore.activity.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -20,7 +21,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-public class FCMActivity extends FirebaseMessagingService {
+public class FCMService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
@@ -48,15 +49,14 @@ public class FCMActivity extends FirebaseMessagingService {
     }
 
     private void sendMyNotification(String body) {
-        Intent intent = new Intent(FCMActivity.this, MainActivity.class);
+        Intent intent = new Intent(FCMService.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("message",body);
-        PendingIntent pendingIntent = PendingIntent.getActivity(FCMActivity.this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(FCMService.this,0,intent,PendingIntent.FLAG_ONE_SHOT);
 
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            //@SuppressLint("WrongConstant")
             NotificationChannel notificationChannel=new NotificationChannel("BookStore_notification","book_channel",NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.setDescription("description");
             notificationChannel.setName("Channel Name");
@@ -72,7 +72,7 @@ public class FCMActivity extends FirebaseMessagingService {
                     .setSmallIcon(R.drawable.notification_icon)
                     .setTicker("Ticker")
                     .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText("New Message From BookStore Recieved"))
+                            .bigText("New Message From BookStore Received"))
                     .setContentIntent(pendingIntent)
                     .setSound(soundUri)
                     .setAutoCancel(true);

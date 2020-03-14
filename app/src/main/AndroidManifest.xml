@@ -7,8 +7,8 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-    <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -30,8 +30,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup" >
-        <activity android:name=".activity.EditProfile" >
-        </activity>
+
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -59,7 +58,7 @@
         </activity>
 
         <service
-            android:name=".activity.FCMActivity"
+            android:name=".api.service.FCMService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -69,7 +68,7 @@
         </service>
 
         <receiver
-            android:name=".activity.MyReceiver"
+            android:name=".api.service.MyReceiver"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.example.BookStore" />
@@ -102,17 +101,15 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ProfileActivity" />
+        <activity android:name=".activity.EditProfile"/>
         <activity
             android:name=".activity.BookActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.MapActivity"
-            android:label="@string/title_activity_map" /> <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> -->
+            android:label="@string/title_activity_map" />
         <activity android:name=".activity.CartActivity" />
-        <activity android:name=".activity.ProcessPaytm" />
-        <activity
-            android:name=".activity.BuyActivity"
-            android:parentActivityName=".activity.MainActivity" />
+        <activity android:name=".activity.PayTmActivity" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.bookstore.model;
+package com.example.bookstore.api.model;
 
 import com.google.gson.annotations.SerializedName;
 

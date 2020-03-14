@@ -24,8 +24,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolBar"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
 
@@ -42,8 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:inputType="text"
-                android:hint="Name"
-                android:textSize="15dp" />
+                android:hint="@string/hint_name"
+                android:textSize="15sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -59,8 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:inputType="textEmailAddress"
-                android:hint="Email"
-                android:textSize="15dp" />
+                android:hint="@string/hint_email"
+                android:textSize="15sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -75,10 +74,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:gravity="bottom"
-                android:hint="Address"
+                android:hint="@string/hint_address"
                 android:inputType="textLongMessage"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -94,9 +92,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:hint="Change password"
+                android:hint="@string/hint_change_password"
                 android:inputType="textPassword"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -105,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="150dp"
             android:background="@drawable/my_button"
-            android:text="save"
+            android:text="@string/hint_save"
             android:textColor="@android:color/white" />
 
     </LinearLayout>

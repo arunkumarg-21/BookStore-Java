@@ -34,14 +34,17 @@ import com.example.bookstore.R;
 import com.example.bookstore.model.ListItem;
 import com.example.bookstore.util.DatabaseHelper;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
 
     private static final int REQ_CODE = 1;
-    ImageView img;
+    ImageView bookImage;
     DatabaseHelper myDb;
     Spinner spinner;
     TextView name, desc, price;
@@ -50,8 +53,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     EditText address;
     Toolbar toolbar;
     Double Price;
-    String Head, Desc;
-    String addr = "select your address";
+    String Name, Desc;
     RatingBar ratingBar;
 
     @SuppressLint("ResourceAsColor")
@@ -74,23 +76,21 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main,menu);
+        inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.mCart:
-                startActivity(new Intent(BookActivity.this,CartActivity.class));
-                break;
+        if (item.getItemId() == R.id.mCart) {
+            startActivity(new Intent(BookActivity.this, CartActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void initializeView() {
 
-        img = findViewById(R.id.img);
+        bookImage = findViewById(R.id.bookImage);
         name = findViewById(R.id.name);
         desc = findViewById(R.id.desc);
         buttonCart = findViewById(R.id.btCart);
@@ -105,7 +105,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     private void toolbarInitialize() {
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -117,29 +117,27 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void gettingPassedData() {
+        String text = "Price:";
 
         Intent intent = getIntent();
-        Head = intent.getStringExtra("head");
-        name.setText(Head);
+        Name = intent.getStringExtra("head");
+        name.setText(Name);
         Desc = intent.getStringExtra("desc");
         desc.setText(Desc);
-        Price = intent.getDoubleExtra("price",0);
-        price.setText("Price:" + Price);
+        Price = intent.getDoubleExtra("price", 0);
+        price.setText(text.concat(Price.toString()));
         byteImage = intent.getByteArrayExtra("image");
         if (byteImage != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length);
-            img.setImageBitmap(bitmap);
+            bookImage.setImageBitmap(bitmap);
         }
     }
 
     private void setAddress() {
 
         String location = myDb.getAddress();
-        if (location == null) {
-            address.setHint(addr);
-        } else {
-            address.setText(location);
-        }
+        address.setText(location);
+
     }
 
     private void addressClickListener() {
@@ -197,30 +195,19 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (buttonCart.getText().equals("Go to cart")) {
                     startActivity(new Intent(BookActivity.this, CartActivity.class));
                 } else {
-                    ListItem listItem = new ListItem(Head, Desc, byteImage, Price);
+                    ListItem listItem = new ListItem(Name, Desc, byteImage, Price);
                     boolean result = myDb.insertCart(listItem);
                     if (result) {
                         Toast.makeText(BookActivity.this, "Added successful", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(BookActivity.this, "Added failed", Toast.LENGTH_SHORT).show();
                     }
-                    buttonCart.setText("Go to cart");
+                    buttonCart.setText(R.string.goto_cart);
                 }
             }
         });
     }
 
-
-    public void onResume() {
-        super.onResume();
-        String location = myDb.getAddress();
-        if (location == null) {
-            address.setHint(addr);
-        } else {
-            address.setText(location);
-        }
-
-    }
 
     public void onItemSelected(AdapterView<?> parent, View args1, int position, long id) {
         int pos = Integer.parseInt(parent.getItemAtPosition(position).toString());
@@ -232,14 +219,12 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQ_CODE: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity(new Intent(getApplicationContext(), MapActivity.class));
-                } else {
-                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-                }
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
+        if (requestCode == REQ_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(new Intent(getApplicationContext(), MapActivity.class));
+            } else {
+                Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
 

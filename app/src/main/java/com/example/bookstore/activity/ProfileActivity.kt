@@ -9,30 +9,26 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Base64
-import android.util.Base64.DEFAULT
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 import com.example.bookstore.R
 import com.example.bookstore.model.UserList
+import com.example.bookstore.util.CircleImage
 import com.example.bookstore.util.DatabaseHelper
+import com.example.bookstore.util.SharedPreferenceHelper
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -40,9 +36,9 @@ class ProfileActivity : AppCompatActivity() {
     var REQUEST_CAMERA: Int = 1
     var SELECT_FILE: Int = 0
     var PERMISSION_CODE = 1000
-    var imguri: Uri? = null
-    lateinit var myDb: DatabaseHelper
-    lateinit var userList: UserList
+    private var imguri: Uri? = null
+    private lateinit var myDb: DatabaseHelper
+    private lateinit var userList: UserList
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,10 +77,10 @@ class ProfileActivity : AppCompatActivity() {
             R.id.edit -> {
                 val i = Intent(this@ProfileActivity, EditProfile::class.java)
                 i.putExtra("name", edit_name.text.toString())
-                i.putExtra("email",edit_email.text.toString())
-                i.putExtra("address",edit_address.text.toString())
-                i.putExtra("password",userList.userPassword)
-                i.putExtra("id",myDb.getUsId(userList.userName))
+                i.putExtra("email", edit_email.text.toString())
+                i.putExtra("address", edit_address.text.toString())
+                i.putExtra("password", userList.userPassword)
+                i.putExtra("id", myDb.getUsId(userList.userName))
                 startActivity(i)
             }
         }
@@ -92,8 +88,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun profileInitialize() {
-        val sh = getSharedPreferences("LoginActivity", Context.MODE_PRIVATE)
-        val name = sh.getString("id", null)
+
+        val sh = SharedPreferenceHelper()
+        val name = sh.getSharedName(applicationContext)
         val circleImage = CircleImage()
         userList = myDb.getUser(name)
 
@@ -105,17 +102,16 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun bitImage(userImage: ByteArray): Bitmap? {
-        val bitmap = BitmapFactory.decodeByteArray(userImage, 0, userImage.size)
 
-        return bitmap
+        return BitmapFactory.decodeByteArray(userImage, 0, userImage.size)
     }
 
 
     private fun buttonClickListener() {
 
-        user_photo.setOnClickListener(View.OnClickListener {
+        user_photo.setOnClickListener {
             onSelectImage()
-        })
+        }
 
     }
 
@@ -176,9 +172,8 @@ class ProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CAMERA) {
-                // imageView.setImageURI(imguri)
-                //Picasso.with(this).load(imguri).transform(CircleImage()).into(user_photo)
-                //myDb.addImage(drawableToByte(user_photo.drawable),userList.userName)
+                Picasso.with(this).load(imguri).transform(CircleImage()).into(user_photo)
+                myDb.addImage(drawableToByte(user_photo.drawable.toBitmap()), userList.userName)
 
             } else if (requestCode == SELECT_FILE) {
                 val selectedImageUri = data?.data
@@ -189,16 +184,12 @@ class ProfileActivity : AppCompatActivity() {
                                     this.contentResolver,
                                     selectedImageUri
                             )
-                            //imageView.setImageBitmap(bitmap)
                             Picasso.with(this).load(selectedImageUri).transform(CircleImage()).into(user_photo)
-                            //val base64ImageString = encoder(selectedImageUri.path!!)
                             myDb.addImage(drawableToByte(bitmap), userList.userName)
                         } else {
                             val source = ImageDecoder.createSource(this.contentResolver, selectedImageUri)
                             val bitmap = ImageDecoder.decodeBitmap(source)
-                            //imageView.setImageBitmap(bitmap)
                             Picasso.with(this).load(selectedImageUri).transform(CircleImage()).into(user_photo)
-                            //val base64ImageString = encoder(selectedImageUri.path!!)
                             myDb.addImage(drawableToByte(bitmap), userList.userName)
                         }
 
@@ -210,15 +201,9 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    /*private fun encoder(filePath: String): String{
-        val bytes = File(filePath).readBytes()
-        return Base64.encodeToString(bytes,DEFAULT)
-    }*/
     private fun drawableToByte(drawable: Bitmap): ByteArray {
-        //val bitmap = (drawable as? BitmapDrawable)?.bitmap
         val stream = ByteArrayOutputStream()
         drawable.compress(Bitmap.CompressFormat.JPEG, 70, stream)
         return stream.toByteArray()
-        //return Base64.decode(drawable, DEFAULT)
     }
 }

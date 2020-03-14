@@ -2,7 +2,6 @@ package com.example.bookstore.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -30,7 +29,7 @@ import com.example.bookstore.R;
 import com.example.bookstore.adapter.MyAdapter;
 import com.example.bookstore.model.ListItem;
 import com.example.bookstore.util.DatabaseHelper;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.bookstore.util.SharedPreferenceHelper;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.ByteArrayOutputStream;
@@ -75,21 +74,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void toolbarInitialize() {
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Are you sure want to exit?")
-                        .setNegativeButton("cancel", null)
-                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        });
-            }
-        });
-
     }
 
     private void drawerLayoutInit() {
@@ -130,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-//        listItems = new List<>();
         listItems = myDb.getAllData();
         if (listItems.size() > 0) {
             adapter = new MyAdapter(listItems, this, this);
@@ -150,8 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         }
-        byte[] bytes = stream.toByteArray();
-        return bytes;
+        return stream.toByteArray();
     }
 
     @Override
@@ -178,11 +160,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.mCart:
-                Intent i = new Intent(MainActivity.this, CartActivity.class);
-                startActivity(i);
-                break;
+        if (item.getItemId() == R.id.mCart) {
+            Intent i = new Intent(MainActivity.this, CartActivity.class);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -201,16 +181,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(i);
                 break;
 
-           /* case R.id.nav_book:
-                drawerLayout.closeDrawer(GravityCompat.START);
-                break;*/
-
             case R.id.nav_logout:
                 drawerLayout.closeDrawer(GravityCompat.START);
-                SharedPreferences sp = getSharedPreferences("LoginActivity", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.clear();
-                editor.apply();
+                SharedPreferenceHelper sph = new SharedPreferenceHelper();
+                sph.removeSharedPreference(getApplicationContext());
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 break;
 
@@ -275,11 +249,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         builder.show();
-        /*recyclerView.setAdapter(null);
-        recyclerView.setLayoutManager(null);
-        recyclerView.getRecycledViewPool().clear();
-        recyclerView.swapAdapter(adapter, false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));*/
 
     }
 
