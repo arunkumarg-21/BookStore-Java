@@ -1,6 +1,8 @@
 package com.example.bookstore.activity
 
+
 import android.content.Intent
+
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -12,12 +14,16 @@ import com.example.bookstore.R
 import com.example.bookstore.util.DatabaseHelper
 import com.example.bookstore.util.SharedPreferenceHelper
 import kotlinx.android.synthetic.main.activity_edit_profile.*
+import kotlinx.android.synthetic.main.activity_edit_profile.edit_address
+import kotlinx.android.synthetic.main.activity_edit_profile.edit_email
+import kotlinx.android.synthetic.main.activity_edit_profile.edit_name
+import kotlinx.android.synthetic.main.activity_edit_profile.toolBar
 
-class EditProfile : AppCompatActivity() {
+
+class EditProfileActivity : AppCompatActivity() {
 
 
     private lateinit var myDb: DatabaseHelper
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,11 +35,11 @@ class EditProfile : AppCompatActivity() {
         inputListener()
 
         val i: Intent = intent
-        val name:String? = i.getStringExtra("name")
-        val email:String? = i.getStringExtra("email")
-        val address:String? = i.getStringExtra("address")
-        val password:String? = i.getStringExtra("password")
-        val id:Int = i.getIntExtra("id",0)
+        val name: String? = i.getStringExtra("name")
+        val email: String? = i.getStringExtra("email")
+        val address: String? = i.getStringExtra("address")
+        val password: String? = i.getStringExtra("password")
+        val id: Int = i.getIntExtra("id", 0)
 
         edit_name.setText(name)
         edit_email.setText(email)
@@ -41,27 +47,31 @@ class EditProfile : AppCompatActivity() {
         edit_password.setText(password)
         save.setOnClickListener {
             if (edit_name.text.toString().isNotEmpty() && edit_email.text.toString().isNotEmpty()) {
-                if (validEmail()) {
+                if (validEmail() && validName()) {
                     val result: Boolean = myDb.updateUser(id, edit_name.text.toString(), edit_email.text.toString(), edit_address.text.toString(), edit_password.text.toString())
                     if (result) {
                         val sp = SharedPreferenceHelper()
-                        sp.initialize(applicationContext,edit_name.text.toString(),edit_password.text.toString())
-                        Toast.makeText(this@EditProfile, "updated successful", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this@EditProfile, ProfileActivity::class.java)
+                        sp.initialize(applicationContext, edit_name.text.toString(), edit_password.text.toString())
+                        Toast.makeText(this@EditProfileActivity, "updated successful", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@EditProfileActivity, ViewProfileActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
                     }
+                } else {
+                    Toast.makeText(applicationContext, "Invalid Details", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
     }
+
 
     private fun toolbarInitialize() {
         setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        toolBar.setNavigationOnClickListener{finish()}
+        toolBar.setNavigationOnClickListener { finish() }
 
     }
 
@@ -70,11 +80,16 @@ class EditProfile : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                if (edit_name.text.toString().isEmpty()) {
-                    edit_name.error = "Cannot Be Null"
-                } else {
-                    edit_name.error = null
-
+                when {
+                    edit_name.text.toString().isEmpty() -> {
+                        edit_name.error = "Cannot Be Null"
+                    }
+                    myDb.matchUserName(edit_name.text.toString()) -> {
+                        edit_name.error = "User Name already Taken"
+                    }
+                    else -> {
+                        edit_name.error = null
+                    }
                 }
             }
         })
@@ -83,6 +98,7 @@ class EditProfile : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
 
             }
+
             override fun afterTextChanged(s: Editable) {
                 if (edit_email.text.toString().isEmpty()) {
                     edit_email.error = "Cannot Be Null"
@@ -103,4 +119,9 @@ class EditProfile : AppCompatActivity() {
         return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()
     }
 
+    private fun validName(): Boolean {
+        return !myDb.matchUserName(edit_name.text.toString())
+    }
+
 }
+

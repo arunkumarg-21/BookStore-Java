@@ -5,10 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.example.bookstore.model.ListItem;
 import com.example.bookstore.model.UserList;
@@ -22,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "BooksTable";
     private static final String CART_TABLE = "CartTable";
     private static final String USER_TABLE = "UserTable";
-    public static final String COL_Id = "Id";
+    private static final String COL_Id = "Id";
     private static final String COL_Name = "Name";
     private static final String COL_Description = "Description";
     private static final String COL_Image = "Image";
@@ -107,11 +105,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             if (res.moveToFirst()) {
                 do {
+                    int id = res.getInt(0);
                     String name = res.getString(1);
                     String desc = res.getString(2);
                     byte[] image = res.getBlob(3);
                     int price = res.getInt(4);
-                    item.add(new ListItem(name, desc, image, price));
+                    item.add(new ListItem(id,name, desc, image, price));
                 } while (res.moveToNext());
             }
         } catch (Exception e) {
@@ -178,23 +177,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_Email, email);
         values.put(COL_Address, address);
         values.put(COL_Password, pass);
-        long result = db.update(USER_TABLE, values, " Id = " + id, null);
+        long result = db.update(USER_TABLE, values, COL_Id + " = " + id, null);
         return result != -1;
     }
 
-    public void delete(String name) {
+    public void deleteCart(int id) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_NAME, " Name=? ", new String[]{name});
+        db.delete(CART_TABLE,  COL_Id+ " = " +id, null);
+
     }
 
-    public void deleteCart(String name) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.delete(CART_TABLE, " Name=? ", new String[]{name});
-    }
-
-    public String getPrice() {
-        String amount = "";
-        int netPrice = 0;
+    public Double getPrice() {
+        double netPrice = 0.0;
         SQLiteDatabase db = getReadableDatabase();
         Cursor result = db.rawQuery("SELECT Price FROM " + CART_TABLE, null);
         if (result.moveToFirst()) {
@@ -202,9 +196,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 netPrice = netPrice + result.getInt(0);
             } while (result.moveToNext());
             result.close();
-            amount = String.valueOf(netPrice);
         }
-        return amount;
+        return netPrice;
 
     }
 
@@ -257,11 +250,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void addImage(byte[] bytes, String name) {
-
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_Image, bytes);
         db.update(USER_TABLE, values, "Name=?", new String[]{name});
+    }
+
+    public boolean matchUserName(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor result = db.rawQuery(" SELECT Name FROM " + USER_TABLE, null);
+        if(result.moveToFirst()) {
+            return result.getString(0).contentEquals(name);
+        }else{
+            return false;
+        }
     }
 }
 

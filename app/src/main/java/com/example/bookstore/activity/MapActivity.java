@@ -91,7 +91,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 SharedPreferenceHelper sph = new SharedPreferenceHelper();
                 String name = sph.getSharedName(getApplicationContext());
                 myDb.setAddress(address.trim(),name);
-               finish();
+                finish();
             }
         });
 
@@ -101,19 +101,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapView = mapFragment.getView();
         mapFragment.getMapAsync(this);
         mFusedLocation = LocationServices.getFusedLocationProviderClient(MapActivity.this);
-        //Places.initialize(MapActivity.this, "AIzaSyDol4I2wHY0wL6B8GhZ4Bzvxc4bvhbZGsw");
-        //placesClient = Places.createClient(this);
-        //final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-
-       /* locate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LatLng currentMarkerLocation = map.getCameraPosition().target;
-
-            }
-        });*/
-
     }
 
 
@@ -131,7 +118,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             layoutParams.setMargins(0, 0, 55, 210);
         }
 
-        //check if gps enabled if not request user to enable it
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(5000);
@@ -164,18 +150,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-
-
         map.setOnMyLocationButtonClickListener( new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
-
-                LatLng myCoordinates = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, DEFAULT_ZOOM));
-                address = getCityName(myCoordinates);
-                mAddress.setText(address);
+                try{
+                    LatLng myCoordinates = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, DEFAULT_ZOOM));
+                    address = getCityName(myCoordinates);
+                    mAddress.setText(address);
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
                 return false;
-
             }
         });
     }
@@ -240,7 +226,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         try {
             List<Address> addresses = geocoder.getFromLocation(myCoordinates.latitude,myCoordinates.longitude,1);
             address = addresses.get(0).getAddressLine(0);
-           // myCity=addresses.get(0).getLocality();
         } catch (IOException e) {
             e.printStackTrace();
         }

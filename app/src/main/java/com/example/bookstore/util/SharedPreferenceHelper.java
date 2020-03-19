@@ -27,4 +27,11 @@ public class SharedPreferenceHelper  {
         return sp.getString("name","");
     }
 
+    public void  setSharedUserId(Context context,int id) {
+        SharedPreferences sp = context.getSharedPreferences(sharedLogin, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("id",id);
+        editor.apply();
+    }
+
 }

@@ -20,7 +20,7 @@
     <string name="navigation_drawer_opened">Drawer opened</string>
     <string name="navigation_drawer_closed">Drawer closed</string>
     <string name="mBook">Books</string>
-    <string name="price">Price</string>
+    <string name="price">Price:</string>
     <string name="address">Delivery to Address</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_map">MapActivity</string>

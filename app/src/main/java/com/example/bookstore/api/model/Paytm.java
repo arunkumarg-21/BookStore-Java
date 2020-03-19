@@ -31,6 +31,8 @@ public class Paytm {
  
     @SerializedName("INDUSTRY_TYPE_ID")
     String industryTypeId;
+
+    String checkSum;
  
     public Paytm(String mId, String channelId, String txnAmount, String website, String callBackUrl, String industryTypeId,String orderId,String custId) {
         this.mId = mId;
@@ -66,7 +68,15 @@ public class Paytm {
     public String getWebsite() {
         return website;
     }
- 
+
+    public String getCheckSum() {
+        return checkSum;
+    }
+
+    public void setCheckSum(String checkSum){
+        this.checkSum = checkSum;
+    }
+
     public String getCallBackUrl() {
         return callBackUrl;
     }

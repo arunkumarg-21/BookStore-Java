@@ -67,13 +67,6 @@
             <!-- </intent-filter> -->
         </service>
 
-        <receiver
-            android:name=".api.service.MyReceiver"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.example.BookStore" />
-            </intent-filter>
-        </receiver>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -100,8 +93,8 @@
             android:name=".activity.RegistrationActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.ProfileActivity" />
-        <activity android:name=".activity.EditProfile"/>
+        <activity android:name=".activity.ViewProfileActivity" />
+        <activity android:name=".activity.EditProfileActivity"/>
         <activity
             android:name=".activity.BookActivity"
             android:windowSoftInputMode="stateHidden" />

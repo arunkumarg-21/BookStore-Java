@@ -50,6 +50,28 @@ public class RegistrationActivity extends AppCompatActivity {
         userEmail = findViewById(R.id.userEmail);
         myDb = new DatabaseHelper(this);
 
+        userName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(myDb.matchUserName(userName.getText().toString())){
+                    userName.setError("username already taken");
+                }else{
+                    userName.setError(null);
+                }
+
+            }
+        });
+
         userEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -77,7 +99,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!(userName.getText().toString().isEmpty() || userPass.getText().toString().isEmpty())) {
-                    if (isValidEmail()) {
+                    if (isValidEmail()&&isValidName()) {
                         UserList userList = new UserList(userName.getText().toString(), userEmail.getText().toString(), userPass.getText().toString(), "aminjikarai", drawableToByte(getResources().getDrawable(R.drawable.profile_pic)));
                         boolean task = myDb.insertUser(userList);
                         if (task) {
@@ -89,7 +111,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             Toast.makeText(RegistrationActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(RegistrationActivity.this, "Not a Valid Email", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Invalid Details", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(RegistrationActivity.this, "please enter all the details", Toast.LENGTH_SHORT).show();
@@ -116,6 +138,10 @@ public class RegistrationActivity extends AppCompatActivity {
         CharSequence target = userEmail.getText().toString();
 
         return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    public boolean isValidName() {
+        return !myDb.matchUserName(userName.getText().toString());
     }
 
     private void userLoginClickListener() {

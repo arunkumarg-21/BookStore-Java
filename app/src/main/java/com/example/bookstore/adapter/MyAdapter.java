@@ -24,19 +24,17 @@ import java.util.List;
 
     public interface ItemClickListener {
         void onItemClick(View v, int pos);
-        void onItemLongClick(View v,int pos);
         void cartInsert(View v,int pos);
     }
 
     private List<ListItem> listItems;
     private Context context;
-    private ItemClickListener itemClickListener,itemLongClickListener;
+    private ItemClickListener itemClickListener;
 
     public MyAdapter(List<ListItem> listItems, Context context, ItemClickListener itemClickListener) {
         this.listItems = listItems;
         this.context = context;
         this.itemClickListener = itemClickListener;
-        this.itemLongClickListener=itemClickListener;
     }
 
     @NonNull
@@ -59,7 +57,6 @@ import java.util.List;
         holder.imageView.setImageBitmap(bitmap);
 
         holder.setItemClickListener(itemClickListener);
-        holder.setItemLongClickListener(itemLongClickListener);
     }
 
     @Override
@@ -67,14 +64,14 @@ import java.util.List;
         return listItems.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView textName;
         TextView textDesc;
         ImageView imageView;
         ImageButton cartButton;
         RatingBar ratingBar;
-        ItemClickListener itemClickListener,itemLongClickListener;
+        ItemClickListener itemClickListener;
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -86,7 +83,6 @@ import java.util.List;
             ratingBar = itemView.findViewById(R.id.rating);
             ratingBar.setRating(3.5f);
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
             cartButton.setOnClickListener(this);
             imageView.setOnClickListener(this);
         }
@@ -104,19 +100,9 @@ import java.util.List;
             }
         }
 
-        @Override
-        public boolean onLongClick(View v){
-            this.itemLongClickListener.onItemLongClick(v,getLayoutPosition());
-            return true;
-        }
-
         public void setItemClickListener(ItemClickListener ic) {
             this.itemClickListener = ic;
 
-        }
-
-        public void setItemLongClickListener(ItemClickListener ilc){
-            this.itemLongClickListener = ilc;
         }
 
     }

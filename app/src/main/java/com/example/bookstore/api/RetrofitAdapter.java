@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitAdapter {
 
-    public PaytmProcess.JsonPlaceHolderApi retroFit() {
+    public PaytmProcess retroFit() {
 
 
     Retrofit client = new Retrofit.Builder()
@@ -13,6 +13,6 @@ public class RetrofitAdapter {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    return  client.create(PaytmProcess.JsonPlaceHolderApi.class);
+    return  client.create(PaytmProcess.class);
 }
 }

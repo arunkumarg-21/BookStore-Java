@@ -52,8 +52,10 @@ class CartAdapter(listItems: List<ListItem>?, context: Context, itemClickListen:
                 }
                 R.id.product_later -> {
                     if (laterButton.text == "SAVE FOR LATER" || laterButton.text == "save for later") {
+                        laterButton.text = "addNow"
                         this.itemClickListen?.minusPrice(v, layoutPosition)
                     } else {
+                        laterButton.text = "SAVE FOR LATER"
                         this.itemClickListen?.addPrice(v, layoutPosition)
                     }
                 }

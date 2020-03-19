@@ -1,24 +1,29 @@
 package com.example.bookstore.model;
 
 public class ListItem {
-    private String mHead;
+    private int id;
+    private String mName;
     private String mDesc;
     private byte[] mImage;
     private double Price;
 
-    /*public ListItem(String mHead, String mDesc, byte[] mImage) {
-        this.mHead = mHead;
-        this.mDesc = mDesc;
-        this.mImage = mImage;
-    }*/
-
-    public ListItem(String mHead,String mDesc, byte[] mImage,double Price){
-        this.mHead = mHead;
+    public ListItem(String mName, String mDesc, byte[] mImage, double Price){
+        this.mName = mName;
         this.mDesc = mDesc;
         this.mImage = mImage;
         this.Price = Price;
     }
 
+    public ListItem(int id, String mName, String mDesc, byte[] mImage, double Price){
+        this(mName,mDesc,mImage,Price);
+        this.id=id;
+    }
+
+
+
+    public int getId() {
+        return id;
+    }
 
     public byte[] getmImage() {
         return mImage;
@@ -29,7 +34,7 @@ public class ListItem {
     }
 
     public String getHead() {
-        return mHead;
+        return mName;
     }
 
     public double getPrice() {
@@ -37,7 +42,7 @@ public class ListItem {
     }
 
     public void setHead(String head) {
-        this.mHead = head;
+        this.mName = head;
     }
 
     public String getDesc() {

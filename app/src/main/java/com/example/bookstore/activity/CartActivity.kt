@@ -21,7 +21,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
     private lateinit var recycler: RecyclerView
     private lateinit var listItems:List<ListItem>
     private lateinit var myDb: DatabaseHelper
-    private lateinit var amount:String
+    private var amount:Double = 0.0
     private val total = "TOTAL:"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +35,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
         net_amount.text = total.plus(amount)
         place_order.setOnClickListener {
             val i = Intent(this@CartActivity, PayTmActivity::class.java)
-            i.putExtra("total",amount)
+            i.putExtra("total",amount.toString())
             startActivity(i)
 
         }
@@ -56,7 +56,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
         recycler.setHasFixedSize(true)
         recycler.layoutManager = LinearLayoutManager(this)
         listItems = mutableListOf()
-        listItems = myDb.getCart()
+        listItems = myDb.cart
         if(listItems.isNotEmpty()){
             recycler.adapter = CartAdapter(listItems, this, this)
         }
@@ -81,17 +81,17 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
 
     override fun delete(v: View?, pos: Int) {
         val listItem = listItems[pos]
-        val name:String = listItem.head
+        val id:Int = listItem.id
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Delete")
                 .setMessage("Are you sure want to delete?")
                 .setNegativeButton("cancel",null)
                 .setPositiveButton("yes"){ dialog, _ ->
                     dialog.dismiss()
-                    myDb.deleteCart(name)
+                    myDb.deleteCart(id)
                     amount = myDb.price
                     net_amount.text = total.plus( amount)
-                    listItems = myDb.getCart()
+                    listItems = myDb.cart
                     if(listItems.isNotEmpty()){
                         recycler.adapter = CartAdapter(listItems, this, this)
                     }
@@ -101,15 +101,15 @@ class CartActivity : AppCompatActivity(), CartAdapter.ItemClickListen {
 
     override fun minusPrice(v: View?, pos: Int) {
         val listItem = listItems[pos]
-        var price:Double = listItem.price
-        price -= amount.toDouble()
-        net_amount.text = total.plus(price)
+        val price:Double = listItem.price
+        amount -= price
+        net_amount.text = total.plus(amount)
     }
 
     override fun addPrice(v: View?, pos: Int) {
         val listItem = listItems[pos]
-        var price:Double = listItem.price
-        price += amount.toDouble()
-        net_amount.text = total.plus(price)
+        val price:Double = listItem.price
+        amount += price
+        net_amount.text = total.plus(amount)
     }
 }

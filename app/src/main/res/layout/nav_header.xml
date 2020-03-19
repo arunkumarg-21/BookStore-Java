@@ -8,19 +8,22 @@
     android:layout_height="176dp">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher_round"
+        android:id="@+id/drawer_image"
+        android:layout_width="95dp"
+        android:layout_height="80dp"
+        android:src="@drawable/profile_pic"
         android:contentDescription="@string/profile_picture" />
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/user_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:text="account"
         android:textColor="@android:color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/user_account"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="info@account"
         android:textColor="@android:color/white"/>

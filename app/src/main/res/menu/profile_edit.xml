@@ -7,11 +7,4 @@
         android:title="Edit">
 
     </item>
-    <!--<item
-        android:id="@+id/mProfile"
-        android:icon="@drawable/ic_account_circle_black_24dp"
-        android:iconTint="@color/colorWhite"
-        app:showAsAction="ifRoom"
-        android:title="Profile">
-    </item>-->
 </menu>

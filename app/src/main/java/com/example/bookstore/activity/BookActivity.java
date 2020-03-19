@@ -52,8 +52,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     byte[] byteImage;
     EditText address;
     Toolbar toolbar;
-    Double Price;
-    String Name, Desc;
+    Double mPrice;
+    String mName, mDesc;
     RatingBar ratingBar;
 
     @SuppressLint("ResourceAsColor")
@@ -120,12 +120,12 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         String text = "Price:";
 
         Intent intent = getIntent();
-        Name = intent.getStringExtra("head");
-        name.setText(Name);
-        Desc = intent.getStringExtra("desc");
-        desc.setText(Desc);
-        Price = intent.getDoubleExtra("price", 0);
-        price.setText(text.concat(Price.toString()));
+        mName = intent.getStringExtra("head");
+        name.setText(mName);
+        mDesc = intent.getStringExtra("desc");
+        desc.setText(mDesc);
+        mPrice = intent.getDoubleExtra("price", 0);
+        price.setText(text.concat(mPrice.toString()));
         byteImage = intent.getByteArrayExtra("image");
         if (byteImage != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length);
@@ -134,7 +134,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void setAddress() {
-
         String location = myDb.getAddress();
         address.setText(location);
 
@@ -169,11 +168,14 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                     Intent in = new Intent(getApplicationContext(), MapActivity.class);
                     in.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(in);
+                    setAddress();
                 }
 
             }
         });
     }
+
+    //initializing spinner to select number of book to order
 
     private void spinnerInitialize() {
 
@@ -187,6 +189,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setAdapter(aa);
     }
 
+    //adds the selected book to the cart and takes the user to the cart
+
     private void cartButtonClickListener() {
 
         buttonCart.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +199,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (buttonCart.getText().equals("Go to cart")) {
                     startActivity(new Intent(BookActivity.this, CartActivity.class));
                 } else {
-                    ListItem listItem = new ListItem(Name, Desc, byteImage, Price);
+                    ListItem listItem = new ListItem(mName, mDesc, byteImage, mPrice);
                     boolean result = myDb.insertCart(listItem);
                     if (result) {
                         Toast.makeText(BookActivity.this, "Added successful", Toast.LENGTH_SHORT).show();
@@ -211,7 +215,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onItemSelected(AdapterView<?> parent, View args1, int position, long id) {
         int pos = Integer.parseInt(parent.getItemAtPosition(position).toString());
-        Price = Price * pos;
+        mPrice = mPrice * pos;
     }
 
     public void onNothingSelected(AdapterView<?> arg0) {
@@ -223,6 +227,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         if (requestCode == REQ_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                setAddress();
             } else {
                 Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
             }

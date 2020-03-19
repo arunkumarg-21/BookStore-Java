@@ -1,23 +1,22 @@
 package com.example.bookstore.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -28,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bookstore.R;
 import com.example.bookstore.adapter.MyAdapter;
 import com.example.bookstore.model.ListItem;
+import com.example.bookstore.model.UserList;
+import com.example.bookstore.util.CircleImage;
 import com.example.bookstore.util.DatabaseHelper;
 import com.example.bookstore.util.SharedPreferenceHelper;
 import com.google.android.material.navigation.NavigationView;
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView.Adapter adapter;
     List<ListItem> listItems;
     ImageButton cartButton;
+    ImageView drawerImage;
+    NavigationView navigationView;
 
 
     @Override
@@ -53,11 +56,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        //initializing widgets in the activity
         initialize();
+        //initializing toolbar
         toolbarInitialize();
+        //initializing drawer layout with toggle enabled
         drawerLayoutInit();
+        //profile initializing on the navigation layout
+        profileInitialize();
+        //inserting local data to the database
         bookInsert();
+        //recycler view to display all the data from database in linear layout
         recyclerViewInit();
     }
 
@@ -67,9 +76,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolBar);
         cartButton = findViewById(R.id.cart_button);
         drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.navigationView);
+        navigationView = findViewById(R.id.navigationView);
         recyclerView = findViewById(R.id.recyclerView);
         navigationView.setNavigationItemSelectedListener(this);
+        drawerImage = findViewById(R.id.drawer_image);
+    }
+
+    //assigning user data from the database to drawer header layout and converting image into circle shape
+
+    public void profileInitialize(){
+        CircleImage circleImage = new CircleImage();
+        View headerView = navigationView.getHeaderView(0);
+        ImageView profilePicture = headerView.findViewById(R.id.drawer_image);
+        TextView userName = headerView.findViewById(R.id.user_name);
+        TextView userAccount = headerView.findViewById(R.id.user_account);
+        SharedPreferenceHelper sph = new SharedPreferenceHelper();
+        String name = sph.getSharedName(getApplicationContext());
+        UserList userList = myDb.getUser(name);
+        profilePicture.setImageBitmap(circleImage.transform(bitImage(userList.getUserImage())));
+        userName.setText(userList.getUserName());
+        userAccount.setText(userList.getUserEmail());
+    }
+
+    private Bitmap bitImage(byte[] userImage){
+        return BitmapFactory.decodeByteArray(userImage, 0, userImage.length);
     }
 
     private void toolbarInitialize() {
@@ -84,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.setDrawerIndicatorEnabled(true);
         toggle.syncState();
     }
-
 
     private void bookInsert() {
 
@@ -124,6 +153,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
+    //this method converts the byte image data from the database to drawable bitmap
+
     private byte[] drawableToByte(Drawable book) {
         Bitmap bitmap = ((BitmapDrawable) book).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -136,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return stream.toByteArray();
     }
 
+    //when user presses back button app will go to on pause state and doesn't close
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -143,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-
             Intent a = new Intent(Intent.ACTION_MAIN);
             a.addCategory(Intent.CATEGORY_HOME);
             a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -157,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -172,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()) {
             case R.id.nav_profile:
                 drawerLayout.closeDrawer(GravityCompat.START);
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                startActivity(new Intent(MainActivity.this, ViewProfileActivity.class));
                 break;
 
             case R.id.nav_cart:
@@ -208,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    //this method passes the selected data information to the next activity
     @Override
     public void onItemClick(View v, int pos) {
         ListItem listItem = listItems.get(pos);
@@ -225,33 +260,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
-    @Override
-    public void onItemLongClick(View v, int pos) {
-        final ListItem listItem = listItems.get(pos);
-        final String name = listItem.getHead();
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Are You Sure Want to Delete?");
-        builder.setMessage("Select your choice");
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                myDb.delete(name);
-                System.out.println("adapter=======");
-                adapter.notifyDataSetChanged();
-            }
-        });
-        builder.show();
-
-    }
-
+    //adds the selected items to the cart
     @Override
     public void cartInsert(View v, int pos) {
 

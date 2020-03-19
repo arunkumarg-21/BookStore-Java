@@ -3,7 +3,6 @@ package com.example.bookstore.activity
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,27 +15,24 @@ import android.provider.MediaStore
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
 import com.example.bookstore.R
 import com.example.bookstore.model.UserList
-import com.example.bookstore.util.CircleImage
-import com.example.bookstore.util.DatabaseHelper
-import com.example.bookstore.util.SharedPreferenceHelper
-import com.squareup.picasso.Picasso
+import com.example.bookstore.util.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
-class ProfileActivity : AppCompatActivity() {
+class ViewProfileActivity : AppCompatActivity() {
 
-    var REQUEST_CAMERA: Int = 1
-    var SELECT_FILE: Int = 0
-    var PERMISSION_CODE = 1000
-    private var imguri: Uri? = null
+    private val requestCamera: Int = 1
+    private val selectFile: Int = 0
+    private val permissionCode = 1000
+    private var imageUri: Uri? = null
     private lateinit var myDb: DatabaseHelper
     private lateinit var userList: UserList
 
@@ -49,15 +45,23 @@ class ProfileActivity : AppCompatActivity() {
         toolbarInitialize()
         profileInitialize()
         buttonClickListener()
+        val params = appbar.layoutParams
+        if(params.height == 3*80){
+            change_user_photo.visibility = View.GONE
+        }else{
+            change_user_photo.visibility = View.VISIBLE
+        }
     }
 
     private fun toolbarInitialize() {
         setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-
-        toolBar.setNavigationOnClickListener { finish() }
-
+        toolBar.setNavigationOnClickListener {
+            val intent = Intent(this@ViewProfileActivity, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
     }
 
     private fun initializeView() {
@@ -75,7 +79,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.edit -> {
-                val i = Intent(this@ProfileActivity, EditProfile::class.java)
+                val i = Intent(this@ViewProfileActivity, EditProfileActivity::class.java)
                 i.putExtra("name", edit_name.text.toString())
                 i.putExtra("email", edit_email.text.toString())
                 i.putExtra("address", edit_address.text.toString())
@@ -91,13 +95,12 @@ class ProfileActivity : AppCompatActivity() {
 
         val sh = SharedPreferenceHelper()
         val name = sh.getSharedName(applicationContext)
-        val circleImage = CircleImage()
         userList = myDb.getUser(name)
 
         edit_name.setText(userList.userName)
         edit_email.setText(userList.userEmail)
         edit_address.setText(userList.userAddress)
-        user_photo.setImageBitmap(circleImage.transform((bitImage(userList.userImage))))
+        user_photo.setImageBitmap((bitImage(userList.userImage)))
 
     }
 
@@ -127,7 +130,7 @@ class ProfileActivity : AppCompatActivity() {
                             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
                                     checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                                 val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                requestPermissions(permission, PERMISSION_CODE)
+                                requestPermissions(permission, permissionCode)
                             } else {
                                 openCamera()
                             }
@@ -138,7 +141,7 @@ class ProfileActivity : AppCompatActivity() {
                         val intent = Intent()
                         intent.type = "image/*"
                         intent.action = Intent.ACTION_GET_CONTENT
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_FILE)
+                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), selectFile)
                     } else if (items[which] == "Cancel") {
                         dialog.dismiss()
                     }
@@ -149,16 +152,16 @@ class ProfileActivity : AppCompatActivity() {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-        imguri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imguri)
-        startActivityForResult(intent, REQUEST_CAMERA)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+        startActivityForResult(intent, requestCamera)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
         when (requestCode) {
-            PERMISSION_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            permissionCode -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera()
             } else {
                 val toast = Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT)
@@ -171,11 +174,11 @@ class ProfileActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CAMERA) {
-                Picasso.with(this).load(imguri).transform(CircleImage()).into(user_photo)
-                myDb.addImage(drawableToByte(user_photo.drawable.toBitmap()), userList.userName)
+            if (requestCode == requestCamera) {
+                myDb.addImage(drawableToByte(MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)), userList.userName)
+                user_photo.setImageBitmap(MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri))
 
-            } else if (requestCode == SELECT_FILE) {
+            } else if (requestCode == selectFile) {
                 val selectedImageUri = data?.data
                 try {
                     selectedImageUri?.let {
@@ -184,13 +187,13 @@ class ProfileActivity : AppCompatActivity() {
                                     this.contentResolver,
                                     selectedImageUri
                             )
-                            Picasso.with(this).load(selectedImageUri).transform(CircleImage()).into(user_photo)
                             myDb.addImage(drawableToByte(bitmap), userList.userName)
+                            user_photo.setImageBitmap((bitmap))
                         } else {
                             val source = ImageDecoder.createSource(this.contentResolver, selectedImageUri)
                             val bitmap = ImageDecoder.decodeBitmap(source)
-                            Picasso.with(this).load(selectedImageUri).transform(CircleImage()).into(user_photo)
                             myDb.addImage(drawableToByte(bitmap), userList.userName)
+                            user_photo.setImageBitmap((bitmap))
                         }
 
                     }

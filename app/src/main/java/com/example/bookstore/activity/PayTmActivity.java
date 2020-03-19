@@ -1,5 +1,6 @@
 package com.example.bookstore.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -33,20 +34,26 @@ public class PayTmActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         price = i.getStringExtra("total");
-        PayTmService paytm = new PayTmService();
 
-        paytm.processPaytm(price);
+        processPaytm();
+
+        /*PayTmService payTmService = new PayTmService();
+
+       Paytm paytm =  payTmService.processPaytm(price);
+       String checksumhash = paytm.getCheckSum();
+       processToPay(checksumhash,paytm);
+        System.out.println("checksum======"+checksumhash);*/
     }
 
-  /*  private void processPaytm() {
+   private void processPaytm() {
 
         String custID = generateString();
         String orderID = generateString();
         String callBackurl = "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=" + orderID;
 
-         paytm = new Paytm("CbArUD06457943921127","WAP",price,"WEBSTAGING",callBackurl,"Retail",orderID,custID);
+        final Paytm paytm = new Paytm("CbArUD06457943921127","WAP",price,"WEBSTAGING",callBackurl,"Retail",orderID,custID);
 
-        PaytmProcess.JsonPlaceHolderApi api = new RetrofitAdapter().retroFit();
+        PaytmProcess api = new RetrofitAdapter().retroFit();
         Call<Checksum> call = api.getChecksum(paytm.getmId(), paytm.getOrderId(), paytm.getCustId()
                 , paytm.getChannelId(), paytm.getTxnAmount(), paytm.getWebsite(), paytm.getCallBackUrl(), paytm.getIndustryTypeId());
 
@@ -66,10 +73,11 @@ public class PayTmActivity extends AppCompatActivity {
             }
         });
 
-    }*/
+    }
 
 
     public void processToPay(String checksumHash, Paytm paytm) {
+
         PaytmPGService Service = PaytmPGService.getStagingService(null);
 
         HashMap<String, String> paramMap = new HashMap<>();
@@ -85,6 +93,7 @@ public class PayTmActivity extends AppCompatActivity {
 // This is the staging value. Production value is available in your dashboard
         paramMap.put("CALLBACK_URL", paytm.getCallBackUrl());
         paramMap.put("CHECKSUMHASH", checksumHash);
+
         PaytmOrder Order = new PaytmOrder(paramMap);
         Service.initialize(Order, null);
 
@@ -123,8 +132,10 @@ public class PayTmActivity extends AppCompatActivity {
 
     }
 
-
-
+    private String generateString() {
+        String uuid = UUID.randomUUID().toString();
+        return uuid.replaceAll("-", "");
+    }
 
 
 }
